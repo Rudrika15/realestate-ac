@@ -24,14 +24,15 @@ const IncomeDetail = require("./IncomeDetail");
 
 // create by and update by relations
 // for user
-User.hasOne(User, {
-  as: "createByUser",
-  foreignKey: "createBy",
-});
-User.hasOne(User, {
-  as: "updateByUser",
-  foreignKey: "updateBy",
-});
+
+// User.hasOne(User, {
+//   as: "createByUser",
+//   foreignKey: "createBy",
+// });
+// User.hasOne(User, {
+//   as: "updateByUser",
+//   foreignKey: "updateBy",
+// });
 
 // for user role
 User.hasOne(UserRole, {

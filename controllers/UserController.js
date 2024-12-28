@@ -52,9 +52,9 @@ exports.loginUser = async (req, res) => {
 
 exports.storeUser = async (req, res) => {
   try {
-    const { name, role, passcode, email } = req.body;
+    const { name, roles, passcode, email } = req.body;
 
-    const fields = { name, role, passcode, email };
+    const fields = { name, roles, passcode, email };
     for (const field in fields) {
       if (!fields[field]) {
         return res.json({
@@ -64,7 +64,13 @@ exports.storeUser = async (req, res) => {
       }
     }
 
-    // Check if the email is already taken
+    if (!Array.isArray(roles) || roles.length === 0) {
+      return res.json({
+        status: false,
+        message: "Roles must be a non-empty array.",
+      });
+    }
+
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.json({
@@ -73,21 +79,30 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    // Hash the passcode
     const saltRounds = 10;
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
 
-    // Create the new user
     const newUser = await User.create({
       name,
-      role,
       email,
       passcode: hashedPasscode,
     });
 
-    // Generate a JWT token
+    const roleInstances = await Role.findAll({
+      where: { name: roles },
+    });
+
+    if (roleInstances.length !== roles.length) {
+      return res.json({
+        status: false,
+        message: "One or more roles are invalid.",
+      });
+    }
+
+    await newUser.setRoles(roleInstances);
+
     const token = jwt.sign(
-      { userId: newUser.id, name: newUser.name, role: newUser.role },
+      { userId: newUser.id, name: newUser.name, roles: roles },
       process.env.JWT_SECRET,
       { expiresIn: "1y" }
     );
@@ -98,8 +113,8 @@ exports.storeUser = async (req, res) => {
       data: {
         id: newUser.id,
         name: newUser.name,
-        role: newUser.role,
         email: newUser.email,
+        roles,
       },
       token,
     });
@@ -112,6 +127,7 @@ exports.storeUser = async (req, res) => {
     });
   }
 };
+
 exports.login = async (req, res) => {
   try {
     const { email, passcode } = req.body;
