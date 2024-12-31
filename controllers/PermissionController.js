@@ -13,6 +13,7 @@ exports.getPermissions = async (req, res) => {
     return res.status(500).json({ status: false, error: err.message });
   }
 };
+
 exports.getPermissionById = async (req, res) => {
   try {
     const { id } = req.params;
