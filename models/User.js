@@ -33,11 +33,11 @@ const User = sequelize.define("User", {
     defaultValue: false,
   },
   createBy: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
   updateBy: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
 });

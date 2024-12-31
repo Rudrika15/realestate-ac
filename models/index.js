@@ -24,6 +24,7 @@ const IncomeDetail = require("./IncomeDetail");
 
 // create by and update by relations
 // for user
+
 User.hasOne(User, {
   as: "createByUser",
   foreignKey: "createBy",
@@ -33,17 +34,24 @@ User.hasOne(User, {
   foreignKey: "updateBy",
 });
 
+
+
 // for user role
 User.hasOne(UserRole, {
   as: "UserRoleCreateByUser",
   foreignKey: "createBy",
 });
+
+
 User.hasOne(UserRole, {
   as: "UserRoleUpdateByUser",
   foreignKey: "updateBy",
 });
 
+
 // for role
+
+
 Role.hasOne(User, {
   as: "RoleCreateBy",
   foreignKey: "createBy",
@@ -272,14 +280,15 @@ User.hasMany(Role, {
   foreignKey: "id",
 });
 
+
 // ------------------------------------------------------------//
 
 // Sync the database
 
-// sequelize
-//   .sync({ alter: true })
-//   .then(() => console.log("All models synced"))
-//   .catch((err) => console.log(err));
+ sequelize
+   .sync({ alter: true })
+   .then(() => console.log("All models synced"))
+   .catch((err) => console.log(err));
 
 module.exports = {
   User,
