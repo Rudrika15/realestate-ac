@@ -19,14 +19,14 @@ const Permission = sequelize.define("Permission", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  createBy:{
+  createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
   },
-  updateBy:{
+  updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 });
 
 module.exports = Permission;

@@ -10,25 +10,22 @@ const BookingPaymentTermsDetail = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
-   BookingPaymentTermsId: {
-     type: DataTypes.INTEGER,
-     allowNull: false,
-
-   },
-   type:{
-     type: DataTypes.STRING,
-     allowNull: false,
-   },
-   installmentAmount: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-   },
-   installmentDueDate: {
-     type: DataTypes.DATE,
-     allowNull: false,
-   },
-   
-
+    BookingPaymentTermsId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    installmentAmount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    installmentDueDate: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
 
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -38,11 +35,11 @@ const BookingPaymentTermsDetail = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    createBy: {
+    createdBy: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    updateBy: {
+    updatedBy: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

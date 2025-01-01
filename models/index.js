@@ -25,223 +25,223 @@ const IncomeDetail = require("./IncomeDetail");
 // create by and update by relations
 // for user
 
-// User.hasOne(User, {
-//   as: "createByUser",
-//   foreignKey: "createBy",
-// });
-// User.hasOne(User, {
-//   as: "updateByUser",
-//   foreignKey: "updateBy",
-// });
+User.hasOne(User, {
+  as: "createdByUser",
+  foreignKey: "createdBy",
+});
+User.hasOne(User, {
+  as: "updatedByUser",
+  foreignKey: "updatedBy",
+});
 
 // for user role
 User.hasOne(UserRole, {
-  as: "UserRoleCreateByUser",
-  foreignKey: "createBy",
+  as: "UserRolecreatedByUser",
+  foreignKey: "createdBy",
 });
 User.hasOne(UserRole, {
-  as: "UserRoleUpdateByUser",
-  foreignKey: "updateBy",
+  as: "UserRoleupdatedByUser",
+  foreignKey: "updatedBy",
 });
 
 // for role
 Role.hasOne(User, {
-  as: "RoleCreateBy",
-  foreignKey: "createBy",
+  as: "RolecreatedBy",
+  foreignKey: "createdBy",
 });
 Role.hasOne(User, {
-  as: "RoleUpdateByUser",
-  foreignKey: "updateBy",
+  as: "RoleupdatedByUser",
+  foreignKey: "updatedBy",
 });
 
 // for role permission
 RolePermission.hasOne(User, {
-  as: "RolePermissionCreateBy",
-  foreignKey: "createBy",
+  as: "RolePermissioncreatedBy",
+  foreignKey: "createdBy",
 });
 RolePermission.hasOne(User, {
-  as: "RolePermissionUpdateByUser",
-  foreignKey: "updateBy",
+  as: "RolePermissionupdatedByUser",
+  foreignKey: "updatedBy",
 });
 
 // for project unit
 ProjectUnit.hasOne(User, {
-  as: "ProjectUnitCreateBy",
-  foreignKey: "createBy",
+  as: "ProjectUnitcreatedBy",
+  foreignKey: "createdBy",
 });
 ProjectUnit.hasOne(User, {
-  as: "ProjectUnitUpdateBy",
-  foreignKey: "updateBy",
+  as: "ProjectUnitupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for project stage transaction
 ProjectStageTransaction.hasOne(User, {
-  as: "ProjectStageTransactionCreateBy",
-  foreignKey: "createBy",
+  as: "ProjectStageTransactioncreatedBy",
+  foreignKey: "createdBy",
 });
 ProjectStageTransaction.hasOne(User, {
-  as: "ProjectStageTransactionUpdateBy",
-  foreignKey: "updateBy",
+  as: "ProjectStageTransactionupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for project stage
 ProjectStage.hasOne(User, {
-  as: "ProjectStageCreateBy",
-  foreignKey: "createBy",
+  as: "ProjectStagecreatedBy",
+  foreignKey: "createdBy",
 });
 ProjectStage.hasOne(User, {
-  as: "ProjectStageUpdateBy",
-  foreignKey: "updateBy",
+  as: "ProjectStageupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for project partner
 ProjectPartner.hasOne(User, {
-  as: "ProjectPartnerCreateBy",
-  foreignKey: "createBy",
+  as: "ProjectPartnercreatedBy",
+  foreignKey: "createdBy",
 });
 ProjectPartner.hasOne(User, {
-  as: "ProjectPartnerUpdateBy",
-  foreignKey: "updateBy",
+  as: "ProjectPartnerupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for project
 Project.hasOne(User, {
-  as: "ProjectCreateBy",
-  foreignKey: "createBy",
+  as: "ProjectcreatedBy",
+  foreignKey: "createdBy",
 });
 Project.hasOne(User, {
-  as: "ProjectUpdateBy",
-  foreignKey: "updateBy",
+  as: "ProjectupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for permission
 Permission.hasOne(User, {
-  as: "PermissionCreateBy",
-  foreignKey: "createBy",
+  as: "PermissioncreatedBy",
+  foreignKey: "createdBy",
 });
 Permission.hasOne(User, {
-  as: "PermissionUpdateBy",
-  foreignKey: "updateBy",
+  as: "PermissionupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for partner
 Partner.hasOne(User, {
-  as: "PartnerCreateBy",
-  foreignKey: "createBy",
+  as: "PartnercreatedBy",
+  foreignKey: "createdBy",
 });
 Partner.hasOne(User, {
-  as: "PartnerUpdateBy",
-  foreignKey: "updateBy",
+  as: "PartnerupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for income Master
 IncomeMaster.hasOne(User, {
-  as: "IncomeMasterCreateBy",
-  foreignKey: "createBy",
+  as: "IncomeMastercreatedBy",
+  foreignKey: "createdBy",
 });
 IncomeMaster.hasOne(User, {
-  as: "IncomeMasterUpdateBy",
-  foreignKey: "updateBy",
+  as: "IncomeMasterupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for income head
 IncomeHead.hasOne(User, {
-  as: "IncomeHeadCreateBy",
-  foreignKey: "createBy",
+  as: "IncomeHeadcreatedBy",
+  foreignKey: "createdBy",
 });
 IncomeHead.hasOne(User, {
-  as: "IncomeHeadUpdateBy",
-  foreignKey: "updateBy",
+  as: "IncomeHeadupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for income details
 IncomeDetail.hasOne(User, {
-  as: "IncomeDetailCreateBy",
-  foreignKey: "createBy",
+  as: "IncomeDetailcreatedBy",
+  foreignKey: "createdBy",
 });
 IncomeDetail.hasOne(User, {
-  as: "IncomeDetailUpdateBy",
-  foreignKey: "updateBy",
+  as: "IncomeDetailupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for expanse Master
 ExpenseMaster.hasOne(User, {
-  as: "ExpenseMasterCreateBy",
-  foreignKey: "createBy",
+  as: "ExpenseMastercreatedBy",
+  foreignKey: "createdBy",
 });
 ExpenseMaster.hasOne(User, {
-  as: "ExpenseMasterUpdateBy",
-  foreignKey: "updateBy",
+  as: "ExpenseMasterupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for expense head
 ExpenseHead.hasOne(User, {
-  as: "ExpenseHeadCreateBy",
-  foreignKey: "createBy",
+  as: "ExpenseHeadcreatedBy",
+  foreignKey: "createdBy",
 });
 ExpenseHead.hasOne(User, {
-  as: "ExpenseHeadUpdateBy",
-  foreignKey: "updateBy",
+  as: "ExpenseHeadupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for expense details
 ExpenseDetail.hasOne(User, {
-  as: "ExpenseDetailCreateBy",
-  foreignKey: "createBy",
+  as: "ExpenseDetailcreatedBy",
+  foreignKey: "createdBy",
 });
 ExpenseDetail.hasOne(User, {
-  as: "ExpenseDetailUpdateBy",
-  foreignKey: "updateBy",
+  as: "ExpenseDetailupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for Customer Master
 CustomerMaster.hasOne(User, {
-  as: "CustomerMasterCreateBy",
-  foreignKey: "createBy",
+  as: "CustomerMastercreatedBy",
+  foreignKey: "createdBy",
 });
 CustomerMaster.hasOne(User, {
-  as: "CustomerMasterUpdateBy",
-  foreignKey: "updateBy",
+  as: "CustomerMasterupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for Booking payment terms details
 BookingPaymentTermsDetail.hasOne(User, {
-  as: "BookingPaymentTermsDetailCreateBy",
-  foreignKey: "createBy",
+  as: "BookingPaymentTermsDetailcreatedBy",
+  foreignKey: "createdBy",
 });
 BookingPaymentTermsDetail.hasOne(User, {
-  as: "BookingPaymentTermsDetailUpdateBy",
-  foreignKey: "updateBy",
+  as: "BookingPaymentTermsDetailupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for booking payment terms
 BookingPaymentTerms.hasOne(User, {
-  as: "BookingPaymentTermsCreateBy",
-  foreignKey: "createBy",
+  as: "BookingPaymentTermscreatedBy",
+  foreignKey: "createdBy",
 });
 BookingPaymentTerms.hasOne(User, {
-  as: "BookingPaymentTermsUpdateBy",
-  foreignKey: "updateBy",
+  as: "BookingPaymentTermsupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for booking master
 BookingMaster.hasOne(User, {
-  as: "BookingMasterCreateBy",
-  foreignKey: "createBy",
+  as: "BookingMastercreatedBy",
+  foreignKey: "createdBy",
 });
 BookingMaster.hasOne(User, {
-  as: "BookingMasterUpdateBy",
-  foreignKey: "updateBy",
+  as: "BookingMasterupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // for booking customer
 BookingCustomer.hasOne(User, {
-  as: "BookingCustomerCreateBy",
-  foreignKey: "createBy",
+  as: "BookingCustomercreatedBy",
+  foreignKey: "createdBy",
 });
 BookingCustomer.hasOne(User, {
-  as: "BookingCustomerUpdateBy",
-  foreignKey: "updateBy",
+  as: "BookingCustomerupdatedBy",
+  foreignKey: "updatedBy",
 });
 
 // ------------------------------------------------------------//
@@ -268,11 +268,17 @@ Permission.belongsToMany(Role, {
   foreignKey: "permission",
 });
 
-User.hasMany(Role, {
+User.belongsToMany(Role, {
+  through: UserRole,
   as: "userRoles",
-  foreignKey: "id",
+  foreignKey: "userId", 
 });
 
+Role.belongsToMany(User, {
+  through: UserRole,
+  as: "users",
+  foreignKey: "roleId", 
+});
 // ------------------------------------------------------------//
 
 // Sync the database

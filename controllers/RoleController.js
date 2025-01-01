@@ -36,12 +36,12 @@ exports.getRole = async (req, res) => {
       include: [
         {
           model: User,
-          as: "RoleCreateBy",
+          as: "RolecreatedBy",
           attributes: ["userName"],
         },
         {
           model: User,
-          as: "RoleUpdateByUser",
+          as: "RoleupdatedByUser",
           attributes: ["userName"],
         },
       ],

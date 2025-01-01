@@ -32,11 +32,11 @@ const ProjectStageTransaction = sequelize.define("ProjectStageTransaction", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  createBy: {
+  createdBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  updateBy: {
+  updatedBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },

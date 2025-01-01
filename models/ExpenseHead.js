@@ -19,11 +19,11 @@ const ExpenseHead = sequelize.define("ExpenseHead", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  createBy: {
+  createdBy: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  updateBy: {
+  updatedBy: {
     type: DataTypes.INTEGER,
     allowNull: true,
   },

@@ -2,18 +2,19 @@ const { User, Role } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
+const sequelize = require("../config/database");
 
 exports.loginUser = async (req, res) => {
   try {
-    const { email, passcode } = req.body;
+    const { userName, passcode } = req.body;
 
-    if (!email || !passcode) {
+    if (!userName || !passcode) {
       return res
         .status(400)
-        .json({ message: "Email and passcode are required" });
+        .json({ message: "userName and passcode are required" });
     }
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { userName } });
     if (!user) {
       return res.status(200).json({ message: "User not found" });
     }
@@ -52,9 +53,10 @@ exports.loginUser = async (req, res) => {
 
 exports.storeUser = async (req, res) => {
   try {
-    const { name, roles, passcode, email } = req.body;
+    const { roles, passcode, authPasscode, userName } = req.body;
 
-    const fields = { name, roles, passcode, email };
+    // Validate input
+    const fields = { authPasscode, roles, passcode, userName };
     for (const field in fields) {
       if (!fields[field]) {
         return res.json({
@@ -64,6 +66,7 @@ exports.storeUser = async (req, res) => {
       }
     }
 
+    // Validate roles
     if (!Array.isArray(roles) || roles.length === 0) {
       return res.json({
         status: false,
@@ -71,25 +74,30 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    // Check for existing user
+    const existingUser = await User.findOne({ where: { userName } });
     if (existingUser) {
       return res.json({
         status: false,
-        message: "Email is already in use.",
+        message: "userName is already in use.",
       });
     }
 
+    // Hash passwords
     const saltRounds = 10;
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
+    const hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
 
+    // Create new user
     const newUser = await User.create({
-      name,
-      email,
+      userName: userName,
       passcode: hashedPasscode,
+      authPasscode: hashedAuthPasscode,
     });
 
+    // Fetch roles from the database
     const roleInstances = await Role.findAll({
-      where: { name: roles },
+      where: { id: roles },
     });
 
     if (roleInstances.length !== roles.length) {
@@ -99,21 +107,28 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    await newUser.setRoles(roleInstances);
+    // Manually insert into the userRole table
+    for (const role of roleInstances) {
+      await sequelize.models.UserRole.create({
+        userId: newUser.id,
+        roleId: role.id,
+      });
+    }
 
+    // Generate token
     const token = jwt.sign(
-      { userId: newUser.id, name: newUser.name, roles: roles },
+      { userId: newUser.id, userName: newUser.userName, roles: roles },
       process.env.JWT_SECRET,
       { expiresIn: "1y" }
     );
 
+    // Response
     return res.status(201).json({
       status: true,
       message: "User added successfully",
       data: {
         id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
+        userName: newUser.userName,
         roles,
       },
       token,
@@ -130,13 +145,13 @@ exports.storeUser = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const { email, passcode } = req.body;
+    const { userName, passcode } = req.body;
 
     // Validate input fields
-    if (!email) {
+    if (!userName) {
       return res.status(400).json({
         status: false,
-        message: "Email is required",
+        message: "userName is required",
       });
     }
 
@@ -147,8 +162,8 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Find user by email
-    const user = await User.findOne({ where: { email } });
+    // Find user by userName
+    const user = await User.findOne({ where: { userName } });
 
     if (!user) {
       return res.status(200).json({
@@ -186,7 +201,7 @@ exports.login = async (req, res) => {
     const userData = {
       id: user.id,
       name: user.name,
-      email: user.email,
+      userName: user.userName,
       role: user.role,
     };
 
@@ -204,52 +219,67 @@ exports.login = async (req, res) => {
     });
   }
 };
+
 exports.getUser = async (req, res) => {
   try {
     const { page = 1, limit = 10, search } = req.query;
 
+    // Parse and calculate pagination values
     const parsedLimit = parseInt(limit);
     const parsedPage = parseInt(page);
-
     const offset = (parsedPage - 1) * parsedLimit;
 
+    // Search condition
     let searchCondition = {};
     if (search) {
       searchCondition = {
         [Op.or]: [
           { name: { [Op.like]: `%${search}%` } },
-          { email: { [Op.like]: `%${search}%` } },
-          { "$Role.role_name$": { [Op.like]: `%${search}%` } },
+          { userName: { [Op.like]: `%${search}%` } },
+          { "$userRoles.role_name$": { [Op.like]: `%${search}%` } },
         ],
       };
     }
 
+    // Fetch users with associated roles and pagination
     const { count, rows: users } = await User.findAndCountAll({
       where: searchCondition,
       limit: parsedLimit,
       offset,
+      distinct: true, // Avoid duplicate rows due to joins
       include: [
         {
           model: Role,
           as: "userRoles",
           attributes: ["role_name"],
+          through: { attributes: [] }, // Exclude join table data
         },
         {
           model: User,
-          as: "createByUser",
+          as: "createdByUser",
           attributes: ["userName"],
         },
         {
           model: User,
-          as: "updateByUser",
+          as: "updatedByUser",
           attributes: ["userName"],
         },
       ],
     });
 
-    // Construct pagination info
+    // Group roles by user
+    const userData = users.map((user) => {
+      const userJSON = user.toJSON();
+      return {
+        ...userJSON,
+        userRoles: userJSON.userRoles.map((role) => role.role_name), // Map roles to an array of role names
+      };
+    });
+
+    // Calculate total pages
     const totalPages = Math.ceil(count / parsedLimit);
 
+    // Send response
     res.json({
       status: true,
       message: "Users fetched successfully",
@@ -259,9 +289,10 @@ exports.getUser = async (req, res) => {
         limit: parsedLimit,
         totalPages,
       },
-      data: users,
+      data: userData,
     });
   } catch (err) {
+    console.error("Error fetching users:", err);
     res.status(500).json({ status: false, error: err.message });
   }
 };
@@ -295,16 +326,16 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role } = req.body;
+    const { name, userName, role } = req.body;
     if (!name) {
       return res
         .status(200)
         .json({ status: false, message: "Name is required" });
     }
-    if (!email) {
+    if (!userName) {
       return res
         .status(200)
-        .json({ status: false, message: "Email is required" });
+        .json({ status: false, message: "userName is required" });
     }
     if (!role) {
       return res
@@ -317,7 +348,7 @@ exports.updateUser = async (req, res) => {
     }
 
     user.name = name;
-    user.email = email;
+    user.userName = userName;
     user.role = role;
 
     await user.save();
