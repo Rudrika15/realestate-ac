@@ -107,7 +107,7 @@ exports.storeUser = async (req, res) => {
       { expiresIn: "1y" }
     );
 
-    res.status(201).json({
+    return res.status(201).json({
       status: true,
       message: "User added successfully",
       data: {
