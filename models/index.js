@@ -271,22 +271,22 @@ Permission.belongsToMany(Role, {
 User.belongsToMany(Role, {
   through: UserRole,
   as: "userRoles",
-  foreignKey: "userId", 
+  foreignKey: "userId",
 });
 
 Role.belongsToMany(User, {
   through: UserRole,
   as: "users",
-  foreignKey: "roleId", 
+  foreignKey: "roleId",
 });
 // ------------------------------------------------------------//
 
 // Sync the database
 
-// sequelize
-//   .sync({ alter: true })
-//   .then(() => console.log("All models synced"))
-//   .catch((err) => console.log(err));
+sequelize
+  .sync({ alter: true })
+  .then(() => console.log("All models synced"))
+  .catch((err) => console.log(err));
 
 module.exports = {
   User,
