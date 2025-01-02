@@ -24,7 +24,7 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid passcode" });
     }
 
-    // Ensure JWT_SECRET is present in environment variables
+    
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return res.status(500).json({ message: "JWT Secret not configured" });
@@ -36,7 +36,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: "1y" }
     );
 
-    // Exclude the passcode from the user data
+    
     const { passcode: _, ...userData } = user.toJSON();
 
     res.json({
@@ -46,7 +46,7 @@ exports.loginUser = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.error(err); // Log the error for debugging
+    console.error(err); 
     res.status(500).json({ error: err.message });
   }
 };
@@ -55,7 +55,7 @@ exports.storeUser = async (req, res) => {
   try {
     const { roles, passcode, authPasscode, userName } = req.body;
 
-    // Validate input
+    
     const fields = { authPasscode, roles, passcode, userName };
     for (const field in fields) {
       if (!fields[field]) {
@@ -66,7 +66,7 @@ exports.storeUser = async (req, res) => {
       }
     }
 
-    // Validate roles
+    
     if (!Array.isArray(roles) || roles.length === 0) {
       return res.json({
         status: false,
@@ -74,7 +74,7 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    // Check for existing user
+    
     const existingUser = await User.findOne({ where: { userName } });
     if (existingUser) {
       return res.json({
@@ -83,19 +83,19 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    // Hash passwords
+    
     const saltRounds = 10;
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
     const hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
 
-    // Create new user
+    
     const newUser = await User.create({
       userName: userName,
       passcode: hashedPasscode,
       authPasscode: hashedAuthPasscode,
     });
 
-    // Fetch roles from the database
+    
     const roleInstances = await Role.findAll({
       where: { id: roles },
     });
@@ -107,7 +107,7 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    // Manually insert into the userRole table
+    
     for (const role of roleInstances) {
       await sequelize.models.UserRole.create({
         userId: newUser.id,
@@ -115,14 +115,14 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    // Generate token
+    
     const token = jwt.sign(
       { userId: newUser.id, userName: newUser.userName, roles: roles },
       process.env.JWT_SECRET,
       { expiresIn: "1y" }
     );
 
-    // Response
+    
     return res.status(201).json({
       status: true,
       message: "User added successfully",
@@ -147,7 +147,7 @@ exports.login = async (req, res) => {
   try {
     const { userName, passcode } = req.body;
 
-    // Validate input fields
+    
     if (!userName) {
       return res.status(400).json({
         status: false,
@@ -162,8 +162,17 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Find user by userName
-    const user = await User.findOne({ where: { userName } });
+    
+    const user = await User.findOne({
+      where: { userName },
+      include: [
+        {
+          model: Role,
+          as: "userRoles",
+          attributes: ["role_name"], 
+        },
+      ],
+    });
 
     if (!user) {
       return res.status(200).json({
@@ -172,7 +181,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Check passcode validity
+    
     const isMatch = await bcrypt.compare(passcode, user.passcode);
     if (!isMatch) {
       return res.status(401).json({
@@ -181,7 +190,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Ensure JWT_SECRET is present in environment variables
+    
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return res.status(500).json({
@@ -190,14 +199,17 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Generate JWT token
+    
     const token = jwt.sign(
       { userId: user.id, name: user.name, role: user.role },
       jwtSecret,
       { expiresIn: "15m" }
     );
 
-    // Return user data and token
+    
+    const roleNames = user.userRoles.map(role => role.role_name);
+
+    
     const userData = {
       id: user.id,
       name: user.name,
@@ -209,13 +221,14 @@ exports.login = async (req, res) => {
       status: true,
       message: "Login successful",
       data: userData,
+      roles: roleNames, 
       token,
     });
   } catch (error) {
     console.error("Error during login:", error);
     return res.status(500).json({
       status: false,
-      message: "Internal server error",
+      message: error.message,
     });
   }
 };
@@ -224,12 +237,12 @@ exports.getUser = async (req, res) => {
   try {
     const { page = 1, limit = 10, search } = req.query;
 
-    // Parse and calculate pagination values
+    
     const parsedLimit = parseInt(limit);
     const parsedPage = parseInt(page);
     const offset = (parsedPage - 1) * parsedLimit;
 
-    // Search condition
+    
     let searchCondition = {};
     if (search) {
       searchCondition = {
@@ -241,18 +254,18 @@ exports.getUser = async (req, res) => {
       };
     }
 
-    // Fetch users with associated roles and pagination
+    
     const { count, rows: users } = await User.findAndCountAll({
       where: searchCondition,
       limit: parsedLimit,
       offset,
-      distinct: true, // Avoid duplicate rows due to joins
+      distinct: true, 
       include: [
         {
           model: Role,
           as: "userRoles",
           attributes: ["role_name"],
-          through: { attributes: [] }, // Exclude join table data
+          through: { attributes: [] }, 
         },
         {
           model: User,
@@ -267,19 +280,19 @@ exports.getUser = async (req, res) => {
       ],
     });
 
-    // Group roles by user
+    
     const userData = users.map((user) => {
       const userJSON = user.toJSON();
       return {
         ...userJSON,
-        userRoles: userJSON.userRoles.map((role) => role.role_name), // Map roles to an array of role names
+        userRoles: userJSON.userRoles.map((role) => role.role_name), 
       };
     });
 
-    // Calculate total pages
+    
     const totalPages = Math.ceil(count / parsedLimit);
 
-    // Send response
+    
     res.json({
       status: true,
       message: "Users fetched successfully",

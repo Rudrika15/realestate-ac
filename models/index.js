@@ -34,23 +34,18 @@ User.hasOne(User, {
   foreignKey: "updatedBy",
 });
 
-
-
 // for user role
 User.hasOne(UserRole, {
   as: "UserRolecreatedByUser",
   foreignKey: "createdBy",
 });
 
-
 User.hasOne(UserRole, {
   as: "UserRoleupdatedByUser",
   foreignKey: "updatedBy",
 });
 
-
 // for role
-
 
 Role.hasOne(User, {
   as: "RolecreatedBy",
@@ -290,10 +285,10 @@ Role.belongsToMany(User, {
 
 // Sync the database
 
-sequelize
-  .sync({ alter: true })
-  .then(() => console.log("All models synced"))
-  .catch((err) => console.log(err));
+// sequelize
+//   .sync({ alter: true })
+//   .then(() => console.log("All models synced"))
+//   .catch((err) => console.log(err));
 
 module.exports = {
   User,
