@@ -37,11 +37,11 @@ const UserRole = sequelize.define("UserRole", {
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
 });
 

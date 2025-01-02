@@ -3,7 +3,7 @@
     "post": {
       "tags": ["Users"],
       "summary": "Add a new user",
-      "description": "Create a new user by providing name, email, and password",
+      "description": "Create a new user by providing name, userName, and password",
       "requestBody": {
         "required": true,
         "content": {
@@ -11,11 +11,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "John Doe"
-                },
-                "email": {
+                "userName": {
                   "type": "string",
                   "example": "john.doe@example.com"
                 },
@@ -23,9 +19,13 @@
                   "type": "string",
                   "example": "Password123"
                 },
-                "role": {
+                "authPasscode": {
                   "type": "string",
-                  "example": "Admin"
+                  "example": "Password123"
+                },
+                "role": {
+                  "type": "array",
+                  "example": [1, 2]
                 }
               }
             }
@@ -48,7 +48,7 @@
                     "type": "string",
                     "example": "John Doe"
                   },
-                  "email": {
+                  "userName": {
                     "type": "string",
                     "example": "john.doe@example.com"
                   }
@@ -83,7 +83,7 @@
                       "type": "string",
                       "example": "John Doe"
                     },
-                    "email": {
+                    "userName": {
                       "type": "string",
                       "example": "john.doe@example.com"
                     }
@@ -100,7 +100,7 @@
     "post": {
       "tags": ["Users"],
       "summary": "Login a user",
-      "description": "Authenticate a user by email and password",
+      "description": "Authenticate a user by userName and password",
       "requestBody": {
         "required": true,
         "content": {
@@ -108,7 +108,7 @@
             "schema": {
               "type": "object",
               "properties": {
-                "email": {
+                "userName": {
                   "type": "string",
                   "example": "john.doe@example.com"
                 },

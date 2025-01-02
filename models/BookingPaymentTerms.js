@@ -50,11 +50,11 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  createBy: {
+  createdBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  updateBy: {
+  updatedBy: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
