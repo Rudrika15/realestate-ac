@@ -1,31 +1,23 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const ProjectStageTransaction = sequelize.define("ProjectStageTransaction", {
+const Broker = sequelize.define("Broker", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  projectStageId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  status: {
+  brokerName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  projectcompletionDate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  actualCompletionDate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  projectWingId: {
+  brokerAddress: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: false,
+  },
+  brokerMobileNumber: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
@@ -45,4 +37,4 @@ const ProjectStageTransaction = sequelize.define("ProjectStageTransaction", {
   },
 });
 
-module.exports = ProjectStageTransaction;
+module.exports = Broker;

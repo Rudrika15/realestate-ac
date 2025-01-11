@@ -15,6 +15,10 @@ const ProjectPartner = sequelize.define("ProjectPartner", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  percentage: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

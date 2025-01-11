@@ -1,4 +1,4 @@
-const { User, Role } = require("../models");
+const { User, Role, UserRole } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
@@ -24,7 +24,6 @@ exports.loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid passcode" });
     }
 
-    
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return res.status(500).json({ message: "JWT Secret not configured" });
@@ -33,10 +32,9 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user.id, name: user.name, role: user.role },
       jwtSecret,
-      { expiresIn: "1y" }
+      { expiresIn: "1h" }
     );
 
-    
     const { passcode: _, ...userData } = user.toJSON();
 
     res.json({
@@ -46,7 +44,7 @@ exports.loginUser = async (req, res) => {
       token,
     });
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -55,7 +53,6 @@ exports.storeUser = async (req, res) => {
   try {
     const { roles, passcode, authPasscode, userName } = req.body;
 
-    
     const fields = { authPasscode, roles, passcode, userName };
     for (const field in fields) {
       if (!fields[field]) {
@@ -66,7 +63,6 @@ exports.storeUser = async (req, res) => {
       }
     }
 
-    
     if (!Array.isArray(roles) || roles.length === 0) {
       return res.json({
         status: false,
@@ -74,7 +70,6 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    
     const existingUser = await User.findOne({ where: { userName } });
     if (existingUser) {
       return res.json({
@@ -83,19 +78,16 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    
     const saltRounds = 10;
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
     const hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
 
-    
     const newUser = await User.create({
       userName: userName,
       passcode: hashedPasscode,
       authPasscode: hashedAuthPasscode,
     });
 
-    
     const roleInstances = await Role.findAll({
       where: { id: roles },
     });
@@ -107,7 +99,6 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    
     for (const role of roleInstances) {
       await sequelize.models.UserRole.create({
         userId: newUser.id,
@@ -115,14 +106,12 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    
     const token = jwt.sign(
       { userId: newUser.id, userName: newUser.userName, roles: roles },
       process.env.JWT_SECRET,
       { expiresIn: "1y" }
     );
 
-    
     return res.status(201).json({
       status: true,
       message: "User added successfully",
@@ -147,7 +136,6 @@ exports.login = async (req, res) => {
   try {
     const { userName, passcode } = req.body;
 
-    
     if (!userName) {
       return res.status(400).json({
         status: false,
@@ -162,14 +150,13 @@ exports.login = async (req, res) => {
       });
     }
 
-    
     const user = await User.findOne({
       where: { userName },
       include: [
         {
           model: Role,
           as: "userRoles",
-          attributes: ["role_name"], 
+          attributes: ["role_name"],
         },
       ],
     });
@@ -181,7 +168,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    
     const isMatch = await bcrypt.compare(passcode, user.passcode);
     if (!isMatch) {
       return res.status(401).json({
@@ -190,7 +176,6 @@ exports.login = async (req, res) => {
       });
     }
 
-    
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       return res.status(500).json({
@@ -199,17 +184,14 @@ exports.login = async (req, res) => {
       });
     }
 
-    
     const token = jwt.sign(
       { userId: user.id, name: user.name, role: user.role },
       jwtSecret,
-      { expiresIn: "15m" }
+      { expiresIn: "1h" } // Token expiration time is 1 hour
     );
 
-    
-    const roleNames = user.userRoles.map(role => role.role_name);
+    const roleNames = user.userRoles.map((role) => role.role_name);
 
-    
     const userData = {
       id: user.id,
       name: user.name,
@@ -221,7 +203,7 @@ exports.login = async (req, res) => {
       status: true,
       message: "Login successful",
       data: userData,
-      roles: roleNames, 
+      roles: roleNames,
       token,
     });
   } catch (error) {
@@ -237,12 +219,10 @@ exports.getUser = async (req, res) => {
   try {
     const { page = 1, limit = 10, search } = req.query;
 
-    
     const parsedLimit = parseInt(limit);
     const parsedPage = parseInt(page);
     const offset = (parsedPage - 1) * parsedLimit;
 
-    
     let searchCondition = {};
     if (search) {
       searchCondition = {
@@ -254,18 +234,17 @@ exports.getUser = async (req, res) => {
       };
     }
 
-    
     const { count, rows: users } = await User.findAndCountAll({
       where: searchCondition,
       limit: parsedLimit,
       offset,
-      distinct: true, 
+      distinct: true,
       include: [
         {
           model: Role,
           as: "userRoles",
           attributes: ["role_name"],
-          through: { attributes: [] }, 
+          through: { attributes: [] },
         },
         {
           model: User,
@@ -280,19 +259,16 @@ exports.getUser = async (req, res) => {
       ],
     });
 
-    
     const userData = users.map((user) => {
       const userJSON = user.toJSON();
       return {
         ...userJSON,
-        userRoles: userJSON.userRoles.map((role) => role.role_name), 
+        userRoles: userJSON.userRoles.map((role) => role.role_name),
       };
     });
 
-    
     const totalPages = Math.ceil(count / parsedLimit);
 
-    
     res.json({
       status: true,
       message: "Users fetched successfully",
@@ -339,33 +315,19 @@ exports.getUserById = async (req, res) => {
 exports.updateUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, userName, role } = req.body;
-    if (!name) {
-      return res
-        .status(200)
-        .json({ status: false, message: "Name is required" });
-    }
-    if (!userName) {
-      return res
-        .status(200)
-        .json({ status: false, message: "userName is required" });
-    }
-    if (!role) {
-      return res
-        .status(200)
-        .json({ status: false, message: "Role is required" });
-    }
-    const user = await User.findOne({ where: { id } });
-    if (!user) {
-      return res.status(200).json({ status: false, message: "User not found" });
-    }
+    const { userName } = req.body;
 
-    user.name = name;
-    user.userName = userName;
-    user.role = role;
+    if (userName) {
+      const user = await User.findOne({ where: { id } });
+      if (!user) {
+        return res
+          .status(200)
+          .json({ status: false, message: "User not found" });
+      }
 
-    await user.save();
-
+      user.userName = userName;
+      await user.save();
+    }
     res.json({
       status: true,
       message: "User updated successfully",
@@ -382,6 +344,10 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findOne({ where: { id } });
     if (!user) {
       return res.status(200).json({ status: false, message: "User not found" });
+    }
+    const userRole = await UserRole.findOne({ where: { userId: id } });
+    if (userRole) {
+      await userRole.destroy();
     }
 
     await user.destroy();

@@ -21,6 +21,7 @@ const ExpenseDetail = require("./ExpenseDetail");
 const IncomeHead = require("./IncomeHead");
 const IncomeMaster = require("./IncomeMaster");
 const IncomeDetail = require("./IncomeDetail");
+const Broker = require("./Broker");
 
 // create by and update by relations
 // for user
@@ -87,33 +88,66 @@ ProjectStageTransaction.hasOne(User, {
 });
 
 // for project stage
-ProjectStage.hasOne(User, {
+ProjectStage.belongsTo(User, {
   as: "ProjectStagecreatedBy",
   foreignKey: "createdBy",
 });
-ProjectStage.hasOne(User, {
+ProjectStage.belongsTo(User, {
   as: "ProjectStageupdatedBy",
   foreignKey: "updatedBy",
 });
 
 // for project partner
-ProjectPartner.hasOne(User, {
+ProjectPartner.belongsTo(User, {
   as: "ProjectPartnercreatedBy",
   foreignKey: "createdBy",
 });
-ProjectPartner.hasOne(User, {
+ProjectPartner.belongsTo(User, {
   as: "ProjectPartnerupdatedBy",
   foreignKey: "updatedBy",
 });
 
 // for project
-Project.hasOne(User, {
+Project.belongsTo(User, {
   as: "ProjectcreatedBy",
   foreignKey: "createdBy",
 });
-Project.hasOne(User, {
+Project.belongsTo(User, {
   as: "ProjectupdatedBy",
   foreignKey: "updatedBy",
+});
+
+// partner with project relations
+ProjectPartner.belongsTo(Project, {
+  as: "project",
+  foreignKey: "projectId",
+});
+
+Project.belongsToMany(ProjectPartner, {
+  through: Partner,
+  as: "partners",
+  foreignKey: "projectId",
+});
+
+// ProjectPartner.belongsToMany(Project, {
+//   through: Partner,
+//   as: "projects",
+//   foreignKey: "partnerId",
+// });
+
+Partner.belongsTo(ProjectPartner, {
+  as: "partner",
+  foreignKey: "partnerId",
+});
+
+ProjectPartner.hasMany(Partner, {
+  as: "ProjectPartners",
+  foreignKey: "id",
+});
+
+Partner.belongsTo(Project, {
+  as: "ProjectProject",
+  foreignKey: "projectId",
 });
 
 // for permission
@@ -127,11 +161,11 @@ Permission.hasOne(User, {
 });
 
 // for partner
-Partner.hasOne(User, {
+Partner.belongsTo(User, {
   as: "PartnercreatedBy",
   foreignKey: "createdBy",
 });
-Partner.hasOne(User, {
+Partner.belongsTo(User, {
   as: "PartnerupdatedBy",
   foreignKey: "updatedBy",
 });
@@ -281,6 +315,34 @@ Role.belongsToMany(User, {
   as: "users",
   foreignKey: "roleId",
 });
+
+// broker and user relations
+
+Broker.belongsTo(User, {
+  as: "BrokercreatedBy",
+  foreignKey: "createdBy",
+});
+Broker.belongsTo(User, {
+  as: "BrokerupdatedBy",
+  foreignKey: "updatedBy",
+});
+
+// projectstage and user relations
+
+ProjectStage.belongsTo(Project, {
+  as: "Project",
+  foreignKey: "projectId",
+});
+
+ProjectStage.hasMany(ProjectStageTransaction, {
+  as: "transactions",
+  foreignKey: "projectStageId",
+});
+ProjectStageTransaction.belongsTo(ProjectStage, {
+  as: "stage",
+  foreignKey: "projectStageId",
+});
+
 // ------------------------------------------------------------//
 
 // Sync the database
