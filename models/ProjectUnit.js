@@ -21,7 +21,7 @@ const ProjectUnit = sequelize.define("ProjectUnit", {
   },
   wing: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   size: {
     type: DataTypes.STRING,

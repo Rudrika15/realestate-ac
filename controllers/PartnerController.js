@@ -46,17 +46,30 @@ exports.getPartners = async (req, res) => {
 exports.getPartnerById = async (req, res) => {
   try {
     const { id } = req.params;
-    const partner = await Partner.findOne({
+    // const partner = await ProjectPartner.findOne({
+    //   where: { id },
+    // });
+    const partner = await ProjectPartner.findOne({
       where: { id },
       include: [
         {
+          model: Project,
+          as: "project",
+          attributes: ["projectName"],
+        },
+        {
+          model: Partner,
+          as: "ProjectPartners",
+          attributes: ["partnerName"],
+        },
+        {
           model: User,
-          as: "PartnercreatedBy",
+          as: "ProjectPartnercreatedBy",
           attributes: ["userName"],
         },
         {
           model: User,
-          as: "PartnerupdatedBy",
+          as: "ProjectPartnerupdatedBy",
           attributes: ["userName"],
         },
       ],
@@ -185,38 +198,20 @@ exports.updatePartner = async (req, res) => {
     const transaction = await sequelize.transaction();
 
     try {
-      const partner = await Partner.findByPk(partner_id, { transaction });
-      if (!partner) {
-        return res.status(404).json({
-          status: false,
-          message: "Partner not found",
-        });
-      }
-
-      await partner.update(
-        {
-          partnerName: partner_name,
-          updatedBy: userId,
-        },
-        { transaction }
-      );
-
-      const projectPartner = await ProjectPartner.findOne({
+      const partner = await ProjectPartner.findOne({
         where: {
           partnerId: partner_id,
           projectId: projectId,
         },
         transaction,
       });
-
-      if (!projectPartner) {
+      if (!partner) {
         return res.status(404).json({
           status: false,
-          message: "Project-Partner association not found",
+          message: "Partner not found",
         });
       }
-
-      await projectPartner.update(
+      await partner.update(
         {
           percentage: percentage,
           updatedBy: userId,
@@ -226,12 +221,11 @@ exports.updatePartner = async (req, res) => {
 
       await transaction.commit();
 
-      res.status(200).json({
+      return res.status(200).json({
         status: true,
         message: "Partner updated successfully",
         data: {
           partner,
-          projectPartner,
         },
       });
     } catch (error) {
@@ -249,65 +243,29 @@ exports.updatePartner = async (req, res) => {
 
 exports.deletePartner = async (req, res) => {
   try {
-    const { partner_id, projectId } = req.body;
-    const userId = req.userId;
+    const { id } = req.params;
+    const userId = req.userId; // Assuming this is retrieved via middleware
 
-    if (!partner_id) {
+    // Validate input
+    if (!id) {
       return res.status(400).json({
         status: false,
-        message: "partner_id is required",
+        message: "Partner ID is required",
       });
     }
+    const projectPartner = await ProjectPartner.findOne({
+      where: {
+        id: id,
+      },
+    });
+    await projectPartner.destroy();
 
-    if (!projectId) {
-      return res.status(400).json({
-        status: false,
-        message: "projectId is required",
-      });
-    }
-
-    const transaction = await sequelize.transaction();
-
-    try {
-      const projectPartner = await ProjectPartner.findOne({
-        where: {
-          partnerId: partner_id,
-          projectId: projectId,
-        },
-        transaction,
-      });
-
-      if (!projectPartner) {
-        return res.status(404).json({
-          status: false,
-          message: "Project-Partner association not found",
-        });
-      }
-
-      await projectPartner.destroy({ transaction });
-
-      const partner = await Partner.findByPk(partner_id, { transaction });
-      if (!partner) {
-        return res.status(404).json({
-          status: false,
-          message: "Partner not found",
-        });
-      }
-
-      await partner.destroy({ transaction });
-
-      await transaction.commit();
-
-      res.status(200).json({
-        status: true,
-        message: "Partner and associated project-partner deleted successfully",
-      });
-    } catch (error) {
-      await transaction.rollback();
-      throw error;
-    }
+    res.status(200).json({
+      status: true,
+      message: "Partner deleted successfully",
+    });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: false,
       error: error.message,
       message: "An error occurred while deleting the partner",

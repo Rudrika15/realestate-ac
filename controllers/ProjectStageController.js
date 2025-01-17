@@ -1,4 +1,4 @@
-const e = require("express");
+const express = require("express");
 const {
   ProjectStage,
   Project,
@@ -238,6 +238,27 @@ exports.updateProjectStage = async (req, res) => {
       return res.status(200).json({
         status: false,
         message: "projectId is required",
+      });
+    }
+    const findProject = await Project.findOne({
+      where: { id: projectId },
+    });
+
+    const findProjectStage = await ProjectStage.findOne({
+      where: { id, projectId: projectId },
+    });
+
+    if (!findProjectStage) {
+      return res.status(200).json({
+        status: false,
+        message: "Project Stage id does not match with the project",
+      });
+    }
+
+    if (!findProject) {
+      return res.status(200).json({
+        status: false,
+        message: "Project not found",
       });
     }
 

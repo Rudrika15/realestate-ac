@@ -51,7 +51,7 @@ const brokerRoute = require("./routes/brokerRoute");
 const authMiddleware = require("./middlewares/authMiddelware");
 const authenticateToken = require("./middlewares/authenticateToken");
 const projectStageRoute = require("./routes/projectStageRoute");
-
+const bookingRoute = require("./routes/bookingRoute");
 // API Routes
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/roles", roleRoutes);
@@ -78,6 +78,8 @@ app.use(
   authenticateToken,
   projectStageRoute
 );
+
+app.use("/api/v1/bookings", authMiddleware, authenticateToken, bookingRoute);
 
 // Swagger Documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));

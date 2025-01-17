@@ -18,7 +18,7 @@ const BookingMaster = sequelize.define("BookingMaster", {
   },
   brokerName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   bookingDate: {
     type: DataTypes.DATE,

@@ -20,11 +20,7 @@ const CustomerMaster = sequelize.define("CustomerMaster", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  city: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  moblieNumber: {
+  mobileNumber: {
     type: DataTypes.STRING,
     allowNull: false,
   },

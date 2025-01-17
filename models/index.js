@@ -106,6 +106,8 @@ ProjectPartner.belongsTo(User, {
   as: "ProjectPartnerupdatedBy",
   foreignKey: "updatedBy",
 });
+// User.hasMany(Partner, { as: "CreatedPartners", foreignKey: "createdBy" });
+// User.hasMany(Partner, { as: "UpdatedPartners", foreignKey: "updatedBy" });
 
 // for project
 Project.belongsTo(User, {
@@ -341,6 +343,17 @@ ProjectStage.hasMany(ProjectStageTransaction, {
 ProjectStageTransaction.belongsTo(ProjectStage, {
   as: "stage",
   foreignKey: "projectStageId",
+});
+
+Role.belongsToMany(Permission, {
+  through: RolePermission,
+  as: "Permissions",
+  foreignKey: "role",
+});
+Permission.belongsToMany(Role, {
+  through: RolePermission,
+  as: "Roles",
+  foreignKey: "permission",
 });
 
 // ------------------------------------------------------------//

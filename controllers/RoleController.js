@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Permission, RolePermission } = require("../models");
 const Role = require("./../models/Role");
 // Controller to store a new role
 exports.storeRole = async (req, res) => {
@@ -31,7 +31,6 @@ exports.storeRole = async (req, res) => {
 
 exports.getRole = async (req, res) => {
   try {
-    // const roles = await Role.findAll();
     const roles = await Role.findAll({
       include: [
         {
@@ -43,6 +42,16 @@ exports.getRole = async (req, res) => {
           model: User,
           as: "RoleupdatedByUser",
           attributes: ["userName"],
+        },
+        {
+          model: Permission, // Include the Permission model
+          as: "Permissions", // Alias used in Role associations
+          through: {
+            model: RolePermission, // The pivot table
+            as: "RolePermission", // Alias for the pivot table
+            attributes: [], // Exclude pivot attributes if not needed
+          },
+          attributes: ["id", "permissionName"], // Attributes of the Permission model
         },
       ],
     });
@@ -56,6 +65,7 @@ exports.getRole = async (req, res) => {
     return res.status(500).json({ status: false, error: err.message });
   }
 };
+
 exports.getRoleById = async (req, res) => {
   try {
     const { id } = req.params;

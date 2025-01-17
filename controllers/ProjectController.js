@@ -169,6 +169,7 @@ exports.projectUnit = async (req, res) => {
     });
   }
 };
+
 exports.getWing = async (req, res) => {
   try {
     const projectId = req.params.id;
@@ -178,10 +179,16 @@ exports.getWing = async (req, res) => {
       },
     });
 
+    // Extract the wings (first part of unitNo before '-')
+    const wings = projectUnit.map((unit) => unit.unitNo.split("-")[0]);
+
+    // Remove duplicate wings using a Set
+    const uniqueWings = [...new Set(wings)];
+
     return res.status(200).json({
       status: true,
       message: "Project Unit fetched successfully",
-      data: projectUnit,
+      data: uniqueWings,
     });
   } catch (error) {
     return res.status(500).json({
