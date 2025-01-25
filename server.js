@@ -54,7 +54,7 @@ const projectStageRoute = require("./routes/projectStageRoute");
 const bookingRoute = require("./routes/bookingRoute");
 // API Routes
 app.use("/api/v1/users", userRoutes);
-app.use("/api/v1/roles", roleRoutes);
+app.use("/api/v1/roles", authMiddleware, authenticateToken, roleRoutes);
 app.use(
   "/api/v1/permissions",
   authMiddleware,

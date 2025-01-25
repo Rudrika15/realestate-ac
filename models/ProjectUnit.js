@@ -39,6 +39,14 @@ const ProjectUnit = sequelize.define("ProjectUnit", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  terraceStatus: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  terraceSize: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

@@ -1,4 +1,4 @@
-const { Permission, Role, RolePermission } = require("../models");
+const { Permission, Role } = require("../models");
 const rolePermission = require("../models/RolePermission");
 
 exports.getRolehasPermission = async (req, res) => {
@@ -25,37 +25,40 @@ exports.getRolehasPermission = async (req, res) => {
     return res.status(500).json({ status: false, error: err.message });
   }
 };
-exports.storeRoleHasPermission = async (req, res) => {
+exports.storeRolehasPermission = async (req, res) => {
   try {
     const { roleName, permissionIds } = req.body;
     const userId = req.userId;
 
-    // Validate input
     if (!roleName) {
-      return res.status(400).json({
+      return res.status(200).json({
         status: false,
-        message: "Role name is required",
+        message: "roleName is required",
       });
     }
 
-    if (!Array.isArray(permissionIds) || permissionIds.length === 0) {
-      return res.status(400).json({
+    if (
+      !permissionIds ||
+      !Array.isArray(permissionIds) ||
+      permissionIds.length === 0
+    ) {
+      return res.status(200).json({
         status: false,
-        message: "Permission IDs must be a non-empty array",
+        message: "permissionIds must be a non-empty array",
       });
     }
 
-    // Create the role in the Role model
+    // Insert role in role model
     const role = await Role.create({
       role_name: roleName,
       createdBy: userId,
       updatedBy: userId,
     });
 
-    // Extract role ID
+    // Get role id
     const roleId = role.id;
 
-    // Prepare data for bulk creation
+    // Create array of objects for bulkCreate
     const rolePermissions = permissionIds.map((permissionId) => ({
       permission: permissionId,
       role: roleId,
@@ -63,19 +66,14 @@ exports.storeRoleHasPermission = async (req, res) => {
       updatedBy: userId,
     }));
 
-    // Bulk create role permissions
-    await RolePermission.bulkCreate(rolePermissions);
+    // Save multiple permissions in rolePermission model
+    await rolePermission.bulkCreate(rolePermissions);
 
-    return res.status(201).json({
+    return res.status(200).json({
       status: true,
       message: "Role with permissions added successfully",
     });
   } catch (err) {
-    console.error("Error in storeRoleHasPermission:", err);
-    return res.status(500).json({
-      status: false,
-      message: "An error occurred while adding the role with permissions",
-      error: err.message,
-    });
+    return res.status(500).json({ status: false, error: err.message });
   }
 };

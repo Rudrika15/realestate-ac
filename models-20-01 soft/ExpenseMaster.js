@@ -1,23 +1,23 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const ExpenseMaster = sequelize.define(
+  "ExpenseMaster",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    projectId: {
+    voucherNo: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    partnerId: {
-      type: DataTypes.INTEGER,
+    expenceDate: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
-    percentage: {
+    totalAmount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
@@ -31,16 +31,21 @@ const ProjectPartner = sequelize.define(
     },
     createdBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     updatedBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = ExpenseMaster;

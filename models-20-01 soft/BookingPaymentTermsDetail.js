@@ -1,26 +1,32 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { BookingPaymentTerms } = require(".");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const BookingPaymentTermsDetail = sequelize.define(
+  "BookingPaymentTermsDetail",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    projectId: {
+    BookingPaymentTermsId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    partnerId: {
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    installmentAmount: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    percentage: {
-      type: DataTypes.INTEGER,
+    installmentDueDate: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
+
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -39,8 +45,13 @@ const ProjectPartner = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = BookingPaymentTermsDetail;

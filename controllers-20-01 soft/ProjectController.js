@@ -1,11 +1,5 @@
 const path = require("path");
-const {
-  Project,
-  User,
-  ProjectUnit,
-  ProjectStage,
-  ProjectPartner,
-} = require("../models");
+const { Project, User, ProjectUnit } = require("../models");
 const XLSX = require("xlsx");
 const multer = require("multer");
 const sequelize = require("../config/database");
@@ -53,17 +47,6 @@ exports.storeProject = async (req, res) => {
     });
   }
 
-  //check project name is
-  const existingProject = await Project.findOne({
-    where: { projectName: project_name },
-  });
-  if (existingProject) {
-    return res.status(200).json({
-      status: false,
-      message: "Project name already exists",
-    });
-  }
-
   // Start a transaction
   const transaction = await sequelize.transaction();
 
@@ -95,8 +78,7 @@ exports.storeProject = async (req, res) => {
       currerntStatus: row["Currernt status"] || null,
       saleDeedAmount: row["Sale deed amount"] || null,
       extraWorkAmount: row["Extra work amount"] || null,
-      terraceStatus: row["Terrace status"] || null,
-      terraceSize: row["Terrace size"] || null,
+      
       createdBy: userId,
       updatedBy: userId,
     }));
@@ -215,44 +197,5 @@ exports.getWing = async (req, res) => {
       message: "An error occurred while processing your request",
       error: error.message,
     });
-  }
-};
-
-exports.deleteProject = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const project = await Project.findOne({ where: { id } });
-    if (!project) {
-      return res.status(200).json({
-        status: false,
-        message: "Project not found",
-      });
-    }
-
-    const projectStage = await ProjectStage.findOne({
-      where: { projectId: id },
-    });
-    if (projectStage) {
-      await ProjectStage.destroy({ where: { projectId: id } });
-    }
-    const projectUnit = await ProjectUnit.findOne({
-      where: { projectId: id },
-    });
-    if (projectUnit) {
-      await ProjectUnit.destroy({ where: { projectId: id } });
-    }
-    const projectPartner = await ProjectPartner.findOne({
-      where: { projectId: id },
-    });
-    if (projectPartner) {
-      await ProjectPartner.destroy({ where: { projectId: id } });
-    }
-    await project.destroy();
-    return res.json({
-      status: true,
-      message: "Project deleted successfully",
-    });
-  } catch (err) {
-    return res.status(500).json({ status: false, error: err.message });
   }
 };

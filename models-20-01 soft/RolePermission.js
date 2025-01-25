@@ -1,25 +1,29 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Role = require("./Role");
+const Permission = require("./Permission");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const RolePermission = sequelize.define(
+  "RolePermission",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    projectId: {
+    role: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      references: {
+        model: Role,
+        key: "id",
+      },
     },
-    partnerId: {
+    permission: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    percentage: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+      references: {
+        model: Permission,
+        key: "permission_id",
+      },
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -39,8 +43,13 @@ const ProjectPartner = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = RolePermission;

@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const ProjectStage = sequelize.define(
+  "ProjectStage",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -13,14 +13,15 @@ const ProjectPartner = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    partnerId: {
+    projectStageName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    projectStagePer: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    percentage: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
@@ -39,8 +40,13 @@ const ProjectPartner = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = ProjectStage;

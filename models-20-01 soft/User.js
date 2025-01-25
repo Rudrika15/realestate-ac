@@ -1,25 +1,30 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Role = require("./Role");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const User = sequelize.define(
+  "User",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    projectId: {
-      type: DataTypes.INTEGER,
+    userName: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    partnerId: {
-      type: DataTypes.INTEGER,
+    status: {
+      type: DataTypes.ENUM("Active", "Inactive"),
+      defaultValue: "Active",
+    },
+    passcode: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    percentage: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+    authPasscode: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
@@ -31,16 +36,21 @@ const ProjectPartner = sequelize.define(
     },
     createdBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     updatedBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = User;

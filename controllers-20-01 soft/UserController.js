@@ -1,4 +1,4 @@
-const { User, Role, UserRole, Permission } = require("../models");
+const { User, Role, UserRole } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
@@ -53,7 +53,7 @@ exports.storeUser = async (req, res) => {
   try {
     const { roles, passcode, authPasscode, userName } = req.body;
 
-    const fields = { roles, passcode, userName };
+    const fields = { authPasscode, roles, passcode, userName };
     for (const field in fields) {
       if (!fields[field]) {
         return res.json({
@@ -77,13 +77,10 @@ exports.storeUser = async (req, res) => {
         message: "userName is already in use.",
       });
     }
-    const hashedAuthPasscode = null;
 
     const saltRounds = 10;
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
-    if (authPasscode) {
-      hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
-    }
+    const hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
 
     const newUser = await User.create({
       userName: userName,
@@ -226,19 +223,7 @@ exports.getUser = async (req, res) => {
     const parsedPage = parseInt(page);
     const offset = (parsedPage - 1) * parsedLimit;
 
-    let searchCondition = {};
-    if (search) {
-      searchCondition = {
-        [Op.or]: [
-          { name: { [Op.like]: `%${search}%` } },
-          { userName: { [Op.like]: `%${search}%` } },
-          { "$userRoles.role_name$": { [Op.like]: `%${search}%` } },
-        ],
-      };
-    }
-
     const { count, rows: users } = await User.findAndCountAll({
-      where: searchCondition,
       limit: parsedLimit,
       offset,
       distinct: true,
@@ -248,16 +233,19 @@ exports.getUser = async (req, res) => {
           as: "userRoles",
           attributes: ["role_name"],
           through: { attributes: [] },
+          required: false,
         },
         {
           model: User,
           as: "createdByUser",
           attributes: ["userName"],
+          required: false,
         },
         {
           model: User,
           as: "updatedByUser",
           attributes: ["userName"],
+          required: false,
         },
       ],
     });
@@ -350,51 +338,14 @@ exports.deleteUser = async (req, res) => {
     }
     const userRole = await UserRole.findOne({ where: { userId: id } });
     if (userRole) {
-      await userRole.destroy();
+      await userRole.update({ isDeleted: true });
     }
 
-    await user.destroy();
+    await user.update({
+      isDeleted: true,
+    });
 
     res.json({ status: true, message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ status: false, error: err.message });
-  }
-};
-
-exports.rolesWisePermissions = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    const userRoles = await UserRole.findAll({
-      where: { userId },
-      include: [
-        {
-          model: Role,
-          as: "role",
-          include: [
-            {
-              model: Permission,
-              as: "permissions",
-              attributes: ["id", "permissionName"],
-            },
-          ],
-        },
-      ],
-    });
-
-    const permissions = userRoles
-      .map((userRole) => userRole.role.permissions)
-      .flat()
-      .map((permission) => ({
-        id: permission.id,
-        name: permission.permissionName,
-      }));
-
-    res.json({
-      status: true,
-      message: "Permissions fetched successfully",
-      data: permissions,
-    });
   } catch (err) {
     res.status(500).json({ status: false, error: err.message });
   }

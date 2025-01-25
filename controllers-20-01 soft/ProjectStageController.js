@@ -216,87 +216,10 @@ exports.getProjectStageById = async (req, res) => {
   }
 };
 
-// exports.updateProjectStage = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const { projectStageName, pojectStagePer, projectId } = req.body;
-//     const userId = req.userId;
-//     if (!projectStageName) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "projectStageName is required",
-//       });
-//     }
-
-//     if (!pojectStagePer) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "pojectStagePer is required",
-//       });
-//     }
-//     if (!projectId) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "projectId is required",
-//       });
-//     }
-//     const findProject = await Project.findOne({
-//       where: { id: projectId },
-//     });
-
-//     const findProjectStage = await ProjectStage.findOne({
-//       where: { id, projectId: projectId },
-//     });
-
-//     if (!findProjectStage) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "Project Stage id does not match with the project",
-//       });
-//     }
-
-//     if (!findProject) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "Project not found",
-//       });
-//     }
-
-//     const projectStage = await ProjectStage.findOne({
-//       where: { id },
-//     });
-
-//     if (!projectStage) {
-//       return res.status(200).json({
-//         status: false,
-//         message: "Project Stage not found",
-//       });
-//     }
-
-//     projectStage.projectStageName = projectStageName;
-//     projectStage.pojectStagePer = pojectStagePer;
-//     projectStage.projectId = projectId;
-//     projectStage.updatedBy = userId;
-
-//     await projectStage.save();
-
-//     return res.status(200).json({
-//       status: true,
-//       message: "Project Stage updated successfully",
-//       data: projectStage,
-//     });
-//   } catch (err) {
-//     return res.status(500).json({
-//       status: false,
-//       message: "An error occurred while processing your request",
-//       error: err.message,
-//     });
-//   }
-// };
 exports.updateProjectStage = async (req, res) => {
   try {
     const { id } = req.params;
-    const { projectStageName, projectStagePer, projectId } = req.body;
+    const { projectStageName, pojectStagePer, projectId } = req.body;
     const userId = req.userId;
     if (!projectStageName) {
       return res.status(200).json({
@@ -305,10 +228,10 @@ exports.updateProjectStage = async (req, res) => {
       });
     }
 
-    if (!projectStagePer) {
+    if (!pojectStagePer) {
       return res.status(200).json({
         status: false,
-        message: "projectStagePer is required",
+        message: "pojectStagePer is required",
       });
     }
     if (!projectId) {
@@ -317,6 +240,28 @@ exports.updateProjectStage = async (req, res) => {
         message: "projectId is required",
       });
     }
+    const findProject = await Project.findOne({
+      where: { id: projectId },
+    });
+
+    const findProjectStage = await ProjectStage.findOne({
+      where: { id, projectId: projectId },
+    });
+
+    if (!findProjectStage) {
+      return res.status(200).json({
+        status: false,
+        message: "Project Stage id does not match with the project",
+      });
+    }
+
+    if (!findProject) {
+      return res.status(200).json({
+        status: false,
+        message: "Project not found",
+      });
+    }
+
     const projectStage = await ProjectStage.findOne({
       where: { id },
     });
@@ -329,7 +274,7 @@ exports.updateProjectStage = async (req, res) => {
     }
 
     projectStage.projectStageName = projectStageName;
-    projectStage.projectStagePer = projectStagePer;
+    projectStage.pojectStagePer = pojectStagePer;
     projectStage.projectId = projectId;
     projectStage.updatedBy = userId;
 

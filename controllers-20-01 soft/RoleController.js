@@ -86,10 +86,7 @@ exports.getRoleById = async (req, res) => {
 exports.updateRole = async (req, res) => {
   try {
     const { id } = req.params;
-    const { role_name, permissionIds } = req.body;
-
-    const userId = req.userId;
-
+    const { role_name } = req.body;
     if (!role_name) {
       return res.status(200).json({
         status: false,
@@ -104,24 +101,6 @@ exports.updateRole = async (req, res) => {
       });
     }
     role.role_name = role_name;
-
-    if (permissionIds && permissionIds.length > 0) {
-      // Delete existing role permissions
-      await RolePermission.destroy({ where: { role: id } });
-
-      // Create new role permissions
-      await Promise.all(
-        permissionIds.map(async (permissionId) => {
-          await RolePermission.create({
-            role: id,
-            permission: permissionId,
-            createdBy: userId,
-            updatedBy: userId,
-          });
-        })
-      );
-    }
-
     await role.save();
     return res.json({
       status: true,

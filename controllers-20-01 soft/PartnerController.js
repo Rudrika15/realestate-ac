@@ -6,14 +6,14 @@ exports.getPartners = async (req, res) => {
   try {
     const partners = await Partner.findAll({
       include: [
-        {
-          model: Project,
-          as: "projects",
-          attributes: ["projectName"],
-          through: {
-            attributes: ["percentage"], // Include the 'percentage' attribute from the join table
-          },
-        },
+        // {
+        //   model: Project,
+        //   as: "projects",
+        //   attributes: ["projectName"],
+        //   through: {
+        //     attributes: [], // Exclude attributes from the join table
+        //   },
+        // },
         {
           model: User,
           as: "PartnercreatedBy",
@@ -37,26 +37,6 @@ exports.getPartners = async (req, res) => {
       status: false,
       error: error.message,
       message: "An error occurred while fetching the partners",
-    });
-  }
-};
-exports.getSinglePartner = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const partner = await Partner.findOne({ where: { id } });
-    if (!partner) {
-      return res.status(404).json({ message: "Partner not found" });
-    }
-    res.status(200).json({
-      status: true,
-      message: "Partner fetched successfully",
-      data: partner,
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      error: error.message,
-      message: "An error occurred while fetching the partner",
     });
   }
 };
@@ -208,36 +188,18 @@ exports.updatePartner = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
-    for (let i = 0; i < projectIds.length; i++) {
-      const projectId = projectIds[i];
-      const percentage = percentages[i];
+    const upsertData = projectIds.map((projectId, index) => ({
+      partnerId,
+      projectId,
+      percentage: percentages[index],
+      createdBy: userId,
+      updatedBy: userId,
+    }));
 
-      // Check if the record exists
-      const existingRecord = await ProjectPartner.findOne({
-        where: { partnerId, projectId },
-        transaction,
-      });
-
-      if (existingRecord) {
-        // Update the existing record
-        await ProjectPartner.update(
-          { percentage, updatedBy: userId },
-          { where: { id: existingRecord.id }, transaction }
-        );
-      } else {
-        // Add a new record
-        await ProjectPartner.create(
-          {
-            partnerId,
-            projectId,
-            percentage,
-            createdBy: userId,
-            updatedBy: userId,
-          },
-          { transaction }
-        );
-      }
-    }
+    await ProjectPartner.bulkCreate(upsertData, {
+      updateOnDuplicate: ["percentage", "updatedBy"],
+      transaction,
+    });
 
     await transaction.commit();
 
@@ -287,26 +249,6 @@ exports.deletePartner = async (req, res) => {
   }
 };
 
-exports.partnerDelete = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const partner = await Partner.findOne({ where: { id } });
-    if (!partner) {
-      return res.status(404).json({ message: "Partner not found" });
-    }
-    await partner.destroy();
-    res.status(200).json({
-      status: true,
-      message: "Partner deleted successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: false,
-      error: error.message,
-      message: "An error occurred while deleting the partner",
-    });
-  }
-};
 exports.getPartnerProjects = async (req, res) => {
   try {
     const { partnerId } = req.params;

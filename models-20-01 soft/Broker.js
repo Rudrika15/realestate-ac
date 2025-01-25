@@ -1,24 +1,24 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const Broker = sequelize.define(
+  "Broker",
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
     },
-    projectId: {
-      type: DataTypes.INTEGER,
+    brokerName: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    partnerId: {
-      type: DataTypes.INTEGER,
+    brokerAddress: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    percentage: {
-      type: DataTypes.INTEGER,
+    brokerMobileNumber: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     isDeleted: {
@@ -39,8 +39,13 @@ const ProjectPartner = sequelize.define(
     },
   },
   {
-    timestamps: false,
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
-module.exports = ProjectPartner;
+module.exports = Broker;

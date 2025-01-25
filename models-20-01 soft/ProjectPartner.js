@@ -40,6 +40,14 @@ const ProjectPartner = sequelize.define(
   },
   {
     timestamps: false,
+  },
+  {
+    defaultScope: {
+      where: { isDeleted: false },
+    },
+    scopes: {
+      withDeleted: { where: {} },
+    },
   }
 );
 
