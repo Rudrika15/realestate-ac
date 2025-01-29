@@ -1,0 +1,1347 @@
+{
+	"info": {
+		"_postman_id": "2fe4298d-ff75-498f-9018-d50a60ed328c",
+		"name": "reastEstate",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37740729",
+		"_collection_link": "https://lunar-trinity-5718.postman.co/workspace/Perfetto-Workspace~b841a5b0-e5cf-4027-88e3-bd3f824286be/collection/37740729-2fe4298d-ff75-498f-9018-d50a60ed328c?action=share&source=collection_link&creator=37740729"
+	},
+	"item": [
+		{
+			"name": "Role",
+			"item": [
+				{
+					"name": "add-role",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role_name\":\"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/roles/store-role",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"roles",
+								"store-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/roles/get-role",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"roles",
+								"get-role"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/roles/get-role/1",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"roles",
+								"get-role",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"role_name\":\"Manager\",\r\n    \"permissionIds\": [1,2,5,6]\r\n}   ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/roles/update-role/5",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"roles",
+								"update-role",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/roles/delete-role/2",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"roles",
+								"delete-role",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\":\"Raviraj\",\r\n    \"passcode\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/users/login",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all  user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/users/get-users",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"users",
+								"get-users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "roles-wise-permissions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQzLCJpYXQiOjE3Mzc2MTU5OTksImV4cCI6MTczNzYxOTU5OX0.LeyLZPwQOQ_s6saUM5QdkWVOdaeTICy--vwhTkvu6vA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/users/roles-wise-permissions",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"users",
+								"roles-wise-permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/users/get-users-by-id/4",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"users",
+								"get-users-by-id",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/users/delete-users/1",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"users",
+								"delete-users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userName\":\"Raviraj\",\r\n    \"passcode\":\"123456\",\r\n    \"authPasscode\":\"123456\",\r\n    \"roles\":[1]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/users/add-user",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"users",
+								"add-user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Role has permission",
+			"item": [
+				{
+					"name": "get role has permission",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/roles-permissions/get-role-permission/1",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"roles-permissions",
+								"get-role-permission",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create role with permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjM0NDQ0NSwiZXhwIjoxNzM2MzQ1MzQ1fQ.pK1ThEP1fAko9mTFQcijCt93pfOSzV8KElwp_eVOu3Y",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"roleName\":\"Peon\",\r\n    \"permissionIds\":[2,3]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/roles-permissions/store-role-permission",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"roles-permissions",
+								"store-role-permission"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Permission",
+			"item": [
+				{
+					"name": "get permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTczNjI1NjU2NCwiZXhwIjoxNzM2MjU3NDY0fQ.pnMcsXr1JuGr8O074NqyYI5JYAmpiyqm2s6_2yRXtCg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/permissions/get-permission",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"permissions",
+								"get-permission"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store-permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTczNjI1NjU2NCwiZXhwIjoxNzM2MjU3NDY0fQ.pnMcsXr1JuGr8O074NqyYI5JYAmpiyqm2s6_2yRXtCg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"permission\":\"User-add\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/permissions/store-permission",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"permissions",
+								"store-permission"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "permissions/get-permission-by-id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjI0NjUyMiwiZXhwIjoxNzM2MjQ3NDIyfQ.W7xQMZlHQIk_d7_6z88eO5ZQZ6Fe4hKgXRSaDs2kABE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/permissions/get-permission-by-id/9",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"permissions",
+								"get-permission-by-id",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjI0NjUyMiwiZXhwIjoxNzM2MjQ3NDIyfQ.W7xQMZlHQIk_d7_6z88eO5ZQZ6Fe4hKgXRSaDs2kABE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"permission\":\"User-ADD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/permissions/update-permission/9",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"permissions",
+								"update-permission",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-permission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjI0NzQ0MywiZXhwIjoxNzM2MjQ4MzQzfQ.Rq7sZBfgUBTrWANxl1JUOoltbUp69LkLvxdQT-mw72Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/permissions/delete-permission/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"permissions",
+								"delete-permission",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "partner",
+			"item": [
+				{
+					"name": "add-partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"partner_name\": \"Kathan\",\r\n  \"projectPartners\": [\r\n    {\r\n      \"projectId\": 16,\r\n      \"percentage\": 5\r\n    }\r\n    \r\n      ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/partner/add-partner",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"partner",
+								"add-partner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/partner/get-partner",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partner",
+								"get-partner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzEwNTY3NiwiZXhwIjoxNzM3MTA5Mjc2fQ._UgJOILDayB7R5NLUnrgM6YGtycttk1wxXOB7_Rrl0Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/partner/get-partner-by-id/16",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"partner",
+								"get-partner-by-id",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"percentages\": [10],\r\n  \"projectIds\": [1]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/partner/update-partner/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partner",
+								"update-partner",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNTgyNDgwMCwiZXhwIjoxNzM1ODI1NzAwfQ.GXjHRzFbIMe64P1sYn9jTu84giqPJVIYZSr4LJT-hAM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/partner/delete-partner/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partner",
+								"delete-partner",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-partner-projects",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/partner/get-partner-projects/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partner",
+								"get-partner-projects",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-single-partner",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/partner/get-single-partner/1",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"partner",
+								"get-single-partner",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "partner-delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/partner/partner-delete/3",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"partner",
+								"partner-delete",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Project",
+			"item": [
+				{
+					"name": "download demo file",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNTg5MTExMywiZXhwIjoxNzM1ODkyMDEzfQ.lh6ppi3wEAVzaFawJGFG5qiE-6k5ZbUZD-EaozjM_4o",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/projects/download-excel",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projects",
+								"download-excel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get projects",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/projects/get-project",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projects",
+								"get-project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "project_name",
+									"value": "Dev darshan",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/D:/flipcode-new/node/realEstate/storage/demoUnit.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{live}}v1/projects/store-project",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projects",
+								"store-project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "project wise  unit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzEwNTY3NiwiZXhwIjoxNzM3MTA5Mjc2fQ._UgJOILDayB7R5NLUnrgM6YGtycttk1wxXOB7_Rrl0Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/projects/get-project-unit/49",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projects",
+								"get-project-unit",
+								"49"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-project",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/projects/delete-project/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"projects",
+								"delete-project",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "broker",
+			"item": [
+				{
+					"name": "get-broker",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjQxOTU0MCwiZXhwIjoxNzM2NDIwNDQwfQ.9F5png50oMnrsfO41tOgrJiOLMj1AbqEqO4vDD8s_zo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{live}}v1/brokers/get-broker",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"brokers",
+								"get-broker"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store-broker",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjQxOTU0MCwiZXhwIjoxNzM2NDIwNDQwfQ.9F5png50oMnrsfO41tOgrJiOLMj1AbqEqO4vDD8s_zo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brokerName\":\"Jigar bhai\",\r\n    \"brokerMobileNumber\":9874563210,\r\n    \"brokerAddress\":\"surendranagar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/brokers/store-broker",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"brokers",
+								"store-broker"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-broker-by-id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjQxODE4NCwiZXhwIjoxNzM2NDE5MDg0fQ.iJRrewNTHdfiKxNgiaZZpA2QsELLMmOoc36UcHU_G0g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/brokers/get-broker-by-id/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"brokers",
+								"get-broker-by-id",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-broker",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjQxOTU0MCwiZXhwIjoxNzM2NDIwNDQwfQ.9F5png50oMnrsfO41tOgrJiOLMj1AbqEqO4vDD8s_zo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/brokers/delete-broker/1",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"brokers",
+								"delete-broker",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-broker",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTczNjQxOTU0MCwiZXhwIjoxNzM2NDIwNDQwfQ.9F5png50oMnrsfO41tOgrJiOLMj1AbqEqO4vDD8s_zo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brokerName\":\"jig's\",\r\n    \"brokerMobileNumber\":9874563210,\r\n    \"brokerAddress\":\"surendranagar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/brokers/update-broker/2",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"brokers",
+								"update-broker",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "project stage",
+			"item": [
+				{
+					"name": "store project stage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzExMDI2NCwiZXhwIjoxNzM3MTEzODY0fQ.pOo-ldOwmezCh866ViEeIigpGb1lOl_GSs0VssTk-48",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"projectStageName\": \"Foundation\",\r\n  \"projectStagePer\": 25,\r\n  \"projectId\": 49,\r\n  \"projectWingData\": [\r\n    {\r\n      \"projectWingId\": \"A\",\r\n      \"status\": \"In Progress\",\r\n      \"projectCompletionDate\": \"2025-03-31\"\r\n    },\r\n    {\r\n      \"projectWingId\": \"B\",\r\n      \"status\": \"Completed\",\r\n      \"projectCompletionDate\": \"2025-03-15\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/projectstage/store-project-stage",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projectstage",
+								"store-project-stage"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-project-stage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzExMDI2NCwiZXhwIjoxNzM3MTEzODY0fQ.pOo-ldOwmezCh866ViEeIigpGb1lOl_GSs0VssTk-48",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/projectstage/get-project-stage/40",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"projectstage",
+								"get-project-stage",
+								"40"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{get-project-stage-by-id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzExMDI2NCwiZXhwIjoxNzM3MTEzODY0fQ.pOo-ldOwmezCh866ViEeIigpGb1lOl_GSs0VssTk-48",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/projectstage/get-project-stage-by-id/49",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"projectstage",
+								"get-project-stage-by-id",
+								"49"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-project-stage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzU0NDAxNCwiZXhwIjoxNzM3NTQ3NjE0fQ.xPeQ4iLgcHDvGLSm-6-DrhwZIG-5syBj5RVHyeynS78",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"projectId\":49,\r\n    \"projectStageName\":\"rcc\",\r\n    \"projectStagePer\":16\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/projectstage/update-project-stage/40",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"projectstage",
+								"update-project-stage",
+								"40"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "store-booking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczNzAyMTkxNSwiZXhwIjoxNzM3MDI1NTE1fQ.4sHxAE2DvpNXpJ-r3Y4fD1srkwqJagd-TMYSAHxu5dE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"projectId\":39,\r\n    \"projectUnitId\":26,\r\n    \"brokerName\":\"ajay\",\r\n    \"saleDeedAmount\":215000,\r\n    \"extraWorkAmount\":10,\r\n    \"otherWorkAmount\":10,\r\n    \"bookingDate\":\"2025-01-16\",\r\n \"customerNames\": \"Alice, Bob, Charlie\",\r\n  \"address\": \"123 Main Street, Springfield\",\r\n  \"mobileNumber\": \"9876543210\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/bookings/store-booking",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"bookings",
+								"store-booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "expense",
+			"item": [
+				{
+					"name": "store expense head",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"expenseHeadName\":\"Labour\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/expense/store-expense-head",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"expense",
+								"store-expense-head"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{local}}v1/expense/store-expense",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"voucherNo\": 123,\r\n  \"expenseDate\": \"2025-01-25\",\r\n  \"amountTotal\": \"15000\",\r\n  \"projectIds\": [40, 45],\r\n  \"ExpenseHeadId\": [1, 2],\r\n  \"naration\": [\"Office supplies\", \"Travel expenses\"],\r\n  \"amount\": [\"5000\", \"10000\"]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{live}}v1/expense/store-expense",
+							"host": [
+								"{{live}}v1"
+							],
+							"path": [
+								"expense",
+								"store-expense"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

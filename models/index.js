@@ -362,6 +362,17 @@ Permission.belongsToMany(Role, {
   foreignKey: "permission",
 });
 
+// expense head and user relations
+
+ExpenseMaster.hasMany(ExpenseDetail, {
+  as: "details", // Alias for the relationship
+  foreignKey: "expenseMasterId", // Foreign key in ExpenseDetail
+});
+
+ExpenseDetail.belongsTo(ExpenseMaster, {
+  foreignKey: "expenseMasterId", // Foreign key in ExpenseDetail
+});
+
 // ------------------------------------------------------------//
 
 // Sync the database

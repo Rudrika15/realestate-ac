@@ -77,9 +77,10 @@ exports.storeUser = async (req, res) => {
         message: "userName is already in use.",
       });
     }
-    const hashedAuthPasscode = null;
 
+    let hashedAuthPasscode = null; // Use 'let' to allow reassignment
     const saltRounds = 10;
+
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
     if (authPasscode) {
       hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);

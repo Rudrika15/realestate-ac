@@ -18,7 +18,7 @@ const ExpenseDetail = sequelize.define("ExpenseDetail", {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
   ExpenseHeadId: {
     type: DataTypes.INTEGER,
