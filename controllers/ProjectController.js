@@ -150,6 +150,28 @@ exports.getProject = async (req, res) => {
     });
   }
 };
+
+// exports.getProject = async (req, res) => {
+//   try {
+//     const projectQuery = `SELECT p.*,ps.* FROM projects p ,projectstages ps where p.id =ps.projectId`; // Correct SQL query
+
+//     const projects = await sequelize.query(projectQuery, {
+//       type: Sequelize.QueryTypes.SELECT, // Ensure results are returned as plain JSON
+//     });
+
+//     return res.status(200).json({
+//       status: true,
+//       message: "Projects retrieved successfully.",
+//       data: projects, // Return actual data
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       status: false,
+//       message: "An error occurred while retrieving projects.",
+//       error: err.message,
+//     });
+//   }
+// };
 exports.projectUnit = async (req, res) => {
   try {
     const projectId = req.params.id;

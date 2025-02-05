@@ -376,7 +376,7 @@ exports.rolesWisePermissions = async (req, res) => {
             {
               model: Permission,
               as: "permissions",
-              attributes: ["id", "permissionName"],
+              attributes: ["id", "permissionName", "slug"], // Ensure slug is selected
             },
           ],
         },
@@ -389,6 +389,7 @@ exports.rolesWisePermissions = async (req, res) => {
       .map((permission) => ({
         id: permission.id,
         name: permission.permissionName,
+        slug: permission.slug, // Include slug in response
       }));
 
     res.json({

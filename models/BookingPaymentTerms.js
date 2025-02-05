@@ -37,9 +37,9 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  builderBankName: {
-    type: DataTypes.STRING,
-    allowNull: false,
+  isByBuilder: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
   },
 
   isDeleted: {

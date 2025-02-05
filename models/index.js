@@ -22,6 +22,10 @@ const IncomeHead = require("./IncomeHead");
 const IncomeMaster = require("./IncomeMaster");
 const IncomeDetail = require("./IncomeDetail");
 const Broker = require("./Broker");
+const PartnerIncome = require("./PartnerIncome");
+const ScrapIncome = require("./ScrapIncome");
+const Income = require("./Income");
+const IncomeInstallment = require("./IncomeInstallment");
 
 // create by and update by relations
 // for user
@@ -375,6 +379,22 @@ ExpenseDetail.belongsTo(ExpenseMaster, {
 
 // ------------------------------------------------------------//
 
+Project.hasMany(Income, { foreignKey: "projectId" }); // Project has many Incomes
+PartnerIncome.belongsTo(Income, { foreignKey: "incomeId" }); // PartnerIncome belongs to Income
+PartnerIncome.belongsTo(Partner, { foreignKey: "partnerId" }); // PartnerIncome belongs to Partner
+Partner.hasMany(PartnerIncome, { foreignKey: "partnerId" }); // Partner has many PartnerIncomes
+Income.belongsTo(Project, { foreignKey: "projectId" });
+
+Income.hasOne(sequelize.models.ScrapIncome, { foreignKey: "incomeId" });
+ScrapIncome.belongsTo(sequelize.models.Income, { foreignKey: "incomeId" });
+
+//booking
+BookingMaster.hasMany(BookingCustomer, { foreignKey: "bookingId" });
+BookingMaster.hasMany(BookingPaymentTerms, { foreignKey: "bookingId" });
+BookingPaymentTerms.hasMany(BookingPaymentTermsDetail, {
+  foreignKey: "BookingPaymentTermsId",
+});
+
 // Sync the database
 
 // sequelize
@@ -405,4 +425,9 @@ module.exports = {
   IncomeHead,
   IncomeMaster,
   IncomeDetail,
+  Broker,
+  PartnerIncome,
+  ScrapIncome,
+  Income,
+  IncomeInstallment,
 };

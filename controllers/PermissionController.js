@@ -44,11 +44,24 @@ exports.storePermission = async (req, res) => {
       });
     }
 
+    // Check if permission already exists
+    const existingPermission = await Permissions.findOne({
+      where: { permissionName: permission },
+    });
+    if (existingPermission) {
+      return res.status(200).json({
+        status: false,
+        message: "Permission already exists",
+      });
+    }
+
+    const slug = permission;
     // Create permission
     const newPermission = await Permissions.create({
       permissionName: permission,
       createdBy: userId,
       updatedBy: userId,
+      slug: slug,
     });
 
     return res.status(201).json({

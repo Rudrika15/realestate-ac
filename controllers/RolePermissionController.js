@@ -10,7 +10,7 @@ exports.getRolehasPermission = async (req, res) => {
         {
           model: Permission,
           as: "permissions",
-          attributes: ["permissionName"],
+          attributes: ["permissionName", "slug"],
           through: { attributes: [] }, // Exclude join table data if not needed
         },
       ],

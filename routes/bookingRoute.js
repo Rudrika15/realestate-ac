@@ -1,7 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-const { storeBooking } = require("../controllers/BookingController");
+const {
+  storeBooking,
+  getProjectWiseStages,
+  getBookings,
+  getBookingAndPaymentHistory,
+} = require("../controllers/BookingController");
 
 router.post("/store-booking", storeBooking);
+router.get("/get-bookings", getBookings);
+router.get("/project-wise-stages/:projectId", getProjectWiseStages);
+router.get("/get-booking-and-payment-history", getBookingAndPaymentHistory);
 module.exports = router;

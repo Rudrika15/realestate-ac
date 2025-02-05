@@ -11,6 +11,10 @@ const Permission = sequelize.define("Permission", {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  slug: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,

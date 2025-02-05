@@ -53,7 +53,7 @@ exports.storeProjectStage = async (req, res) => {
       projectStageId,
       projectWingId: wing.projectWingId,
       status: wing.status,
-      projectcompletionDate: wing.projectCompletionDate,
+      projectompletionDate: wing.projectCompletionDate,
       createdBy: userId,
       updatedBy: userId,
     }));
