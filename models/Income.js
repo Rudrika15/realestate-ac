@@ -25,10 +25,7 @@ const Income = sequelize.define("Income", {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
-  paymentMode: {
-    type: DataTypes.ENUM("cash", "cheque"),
-    allowNull: false,
-  },
+
   dateReceived: {
     type: DataTypes.DATE,
     allowNull: false,

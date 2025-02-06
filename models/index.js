@@ -388,13 +388,44 @@ Income.belongsTo(Project, { foreignKey: "projectId" });
 Income.hasOne(sequelize.models.ScrapIncome, { foreignKey: "incomeId" });
 ScrapIncome.belongsTo(sequelize.models.Income, { foreignKey: "incomeId" });
 
-//booking
-BookingMaster.hasMany(BookingCustomer, { foreignKey: "bookingId" });
-BookingMaster.hasMany(BookingPaymentTerms, { foreignKey: "bookingId" });
-BookingPaymentTerms.hasMany(BookingPaymentTermsDetail, {
-  foreignKey: "BookingPaymentTermsId",
+CustomerMaster.hasMany(BookingCustomer, {
+  foreignKey: "customerId",
+  as: "customers",
+});
+BookingCustomer.belongsTo(CustomerMaster, {
+  foreignKey: "customerId",
+  as: "customer",
 });
 
+// BookingMaster ↔ BookingCustomer (One-to-Many)
+BookingMaster.hasMany(BookingCustomer, {
+  foreignKey: "bookingId",
+  as: "customers",
+});
+BookingCustomer.belongsTo(BookingMaster, {
+  foreignKey: "bookingId",
+  as: "booking",
+});
+
+// BookingMaster ↔ BookingPaymentTerms (One-to-Many)
+BookingMaster.hasMany(BookingPaymentTerms, {
+  foreignKey: "bookingId",
+  as: "paymentTerms",
+});
+BookingPaymentTerms.belongsTo(BookingMaster, {
+  foreignKey: "bookingId",
+  as: "booking",
+});
+
+// BookingPaymentTerms ↔ BookingPaymentTermsDetail (One-to-Many)
+BookingPaymentTerms.hasMany(BookingPaymentTermsDetail, {
+  foreignKey: "BookingPaymentTermsId",
+  as: "paymentDetails",
+});
+BookingPaymentTermsDetail.belongsTo(BookingPaymentTerms, {
+  foreignKey: "BookingPaymentTermsId",
+  as: "paymentTerm",
+});
 // Sync the database
 
 // sequelize

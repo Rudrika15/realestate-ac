@@ -36,8 +36,8 @@ const InstallmentIncome = sequelize.define("InstallmentIncome", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  receiptDate: {
-    type: DataTypes.DATE,
+  receiptName: {
+    type: DataTypes.STRING,
     allowNull: true,
   },
   bankName: {

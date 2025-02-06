@@ -1,3 +1,4 @@
+const { Sequelize } = require("sequelize");
 const {
   BookingMaster,
   CustomerMaster,
@@ -5,6 +6,7 @@ const {
   ProjectStage,
   BookingPaymentTerms,
   BookingPaymentTermsDetail,
+  ProjectUnit,
 } = require("../models");
 
 exports.storeBooking = async (req, res) => {
@@ -20,9 +22,9 @@ exports.storeBooking = async (req, res) => {
       "extraWorkAmount",
       "otherWorkAmount",
       "bookingDate",
-      "customerNames",
+      // "customerName",
       "address",
-      "mobileNumber",
+      // "mobileNumber",
       "selectPlan",
       "frequency",
       "defaultDate",
@@ -39,6 +41,16 @@ exports.storeBooking = async (req, res) => {
       }
     }
 
+    const findStatusOfUnit = await ProjectUnit.findOne({
+      where: { id: data.projectUnitId },
+    });
+    if (findStatusOfUnit.currerntStatus !== "Unsold") {
+      return res.status(400).json({
+        status: false,
+        message: "Unit is not available for booking",
+      });
+    }
+
     const booking = await BookingMaster.create({
       projectId: data.projectId,
       projectUnitId: data.projectUnitId,
@@ -51,10 +63,10 @@ exports.storeBooking = async (req, res) => {
       updatedBy: userId,
     });
 
-    const customerData = data.customerNames.map((name, index) => ({
-      customerName: name,
+    const customerData = data.customerNames.map((customer, index) => ({
+      customerName: customer.customerName,
       address: data.address,
-      mobileNumber: data.mobileNumber[index] || "",
+      mobileNumber: customer.mobileNumber || "",
       type: index === 0 ? "Primary" : "Others",
       createdBy: userId,
       updatedBy: userId,
@@ -87,6 +99,17 @@ exports.storeBooking = async (req, res) => {
     const stageData = await ProjectStage.findAll({
       where: { projectId: data.projectId },
     });
+
+    const updateUnitStatus = await ProjectUnit.update(
+      {
+        currerntStatus: "Sold",
+      },
+      {
+        where: {
+          id: data.projectUnitId,
+        },
+      }
+    );
 
     if (!stageData || stageData.length === 0) {
       return res.status(400).json({
@@ -233,54 +256,82 @@ exports.getBookingAndPaymentHistory = async (req, res) => {
   try {
     const { customerName } = req.body;
 
-    const findCustomerDetails = await CustomerMaster.findAll({
+    if (!customerName) {
+      return res.status(400).json({
+        status: false,
+        message: "Customer name is required",
+      });
+    }
+
+    const findCustomerDetails = await CustomerMaster.findOne({
       where: {
-        customerName,
+        customerName: {
+          [Sequelize.Op.like]: `%${customerName}%`,
+        },
       },
     });
 
     if (!findCustomerDetails) {
       return res.status(404).json({ message: "Customer not found" });
     }
-    return res.json({
-      status: true,
-      message: "Customer fetched successfully",
-      data: findCustomerDetails,
-    });
 
-    const booking = await BookingMaster.findOne({
+    const findCustomer = await BookingCustomer.findOne({
       where: {
         customerId: findCustomerDetails.id,
       },
       include: [
         {
+          model: CustomerMaster,
+          as: "customer", // Correct alias
+          attributes: ["id", "customerName"],
+        },
+      ],
+    });
+
+    if (!findCustomer) {
+      return res
+        .status(404)
+        .json({ message: "Booking not found for this customer" });
+    }
+
+    const findBookingDetails = await BookingMaster.findOne({
+      where: {
+        id: findCustomer.bookingId,
+      },
+      include: [
+        {
           model: BookingPaymentTerms,
+          as: "paymentTerms",
+          where: { isDeleted: false },
           required: false,
           include: [
             {
               model: BookingPaymentTermsDetail,
+              as: "paymentDetails",
               required: false,
             },
           ],
         },
-      ],
-      order: [
-        ["createdAt", "DESC"],
-        ["bookingPaymentTerms.createdAt", "DESC"],
-        ["bookingPaymentTermsDetails.createdAt", "DESC"],
+        {
+          model: BookingCustomer,
+          as: "customers", // Correct alias for BookingCustomer
+          include: [
+            {
+              model: CustomerMaster,
+              as: "customer", // Correct alias for CustomerMaster inside BookingCustomer
+              attributes: ["id", "customerName"],
+            },
+          ],
+        },
       ],
     });
 
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
-
-    return res.json({
+    return res.status(200).json({
       status: true,
       message: "Booking and payment history fetched successfully",
       data: {
         customer: findCustomerDetails,
-        booking,
+        bookingDetails: findBookingDetails,
       },
     });
   } catch (error) {
