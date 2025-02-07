@@ -54,66 +54,72 @@ exports.getIncomeHead = async (req, res) => {
   }
 };
 exports.createScrapIncome = async (req, res) => {
-  const {
-    projectId,
-
-    amount,
-    paymentMode,
-    dateReceived,
-    incomeHeadId,
-    bankName,
-    chequeNumber,
-    chequeDate,
-    buyerName,
-  } = req.body;
+  const { incomes } = req.body;
   const userId = req.userId;
-  const incomeType = "Others";
-  if (!projectId) {
+
+  console.log("Received payload:", req.body); // Log full request body
+  console.log("Extracted incomes:", incomes); // Log extracted incomes
+
+  if (!incomes || !Array.isArray(incomes) || incomes.length === 0) {
     return res
-      .status(200)
-      .json({ success: false, message: "Project is required" });
-  }
-  if (!amount) {
-    return res
-      .status(200)
-      .json({ success: false, message: "Amount is required" });
-  }
-  if (!paymentMode) {
-    return res
-      .status(200)
-      .json({ success: false, message: "Payment mode is required" });
-  }
-  if (!dateReceived) {
-    return res
-      .status(200)
-      .json({ success: false, message: "Date received is required" });
+      .status(400)
+      .json({ success: false, message: "Incomes array is required" });
   }
 
   try {
-    const income = await Income.create({
-      projectId,
-      incomeType,
-      amount,
-      paymentMode,
-      dateReceived,
-      createdBy: userId,
-      updatedBy: userId,
-    });
+    const createdIncomes = [];
 
-    const Scrap = await ScrapIncome.create({
-      incomeId: income.id,
-      incomeHeadId,
-      buyerName,
-      bankName,
-      chequeNumber,
-      chequeDate,
-      createdBy: userId,
-      updatedBy: userId,
-    });
+    for (const incomeData of incomes) {
+      console.log("Processing income data:", incomeData); // Log each income entry
+
+      const {
+        projectId,
+        incomeType,
+        amount,
+        paymentMode,
+        dateReceived,
+        PartnerId,
+      } = incomeData;
+
+      if (!projectId) {
+        console.error("Error: Project ID missing in", incomeData);
+        return res
+          .status(400)
+          .json({ success: false, message: "Project is required" });
+      }
+      if (!amount) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Amount is required" });
+      }
+      if (!paymentMode) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Payment mode is required" });
+      }
+      if (!dateReceived) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Date received is required" });
+      }
+
+      const income = await Income.create({
+        projectId,
+        incomeType,
+        amount,
+        paymentMode,
+        dateReceived,
+        PartnerId,
+        createdBy: userId,
+        updatedBy: userId,
+      });
+
+      createdIncomes.push(income);
+    }
 
     return res.status(200).json({
       success: true,
-      data: { Scrap, income },
+      data: createdIncomes,
     });
   } catch (error) {
     console.error("Error details:", error);
@@ -123,6 +129,7 @@ exports.createScrapIncome = async (req, res) => {
     });
   }
 };
+
 exports.getAllScrapIncomes = async (req, res) => {
   try {
     const scrapIncomes = await sequelize.query(

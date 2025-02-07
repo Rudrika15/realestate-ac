@@ -365,7 +365,7 @@ Permission.belongsToMany(Role, {
   as: "Roles",
   foreignKey: "permission",
 });
-
+  
 // expense head and user relations
 
 ExpenseMaster.hasMany(ExpenseDetail, {
@@ -375,6 +375,11 @@ ExpenseMaster.hasMany(ExpenseDetail, {
 
 ExpenseDetail.belongsTo(ExpenseMaster, {
   foreignKey: "expenseMasterId", // Foreign key in ExpenseDetail
+});
+
+ExpenseDetail.belongsTo(ExpenseHead, {
+  foreignKey: "expenseHeadId",
+  as: "expenseHead",
 });
 
 // ------------------------------------------------------------//

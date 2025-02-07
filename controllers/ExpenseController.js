@@ -262,28 +262,25 @@ const { Op } = require("sequelize"); // Import Sequelize operators
 
 exports.getAllExpenses = async (req, res) => {
   try {
-    const { projectId, ExpenseHeadId, startDate, endDate } = req.query; // Extract filters from query parameters
+    const { projectId, ExpenseHeadId, startDate, endDate } = req.query;
 
-    // Define filter conditions dynamically
     const expenseMasterWhereCondition = {};
     const expenseDetailWhereCondition = {};
 
-    // Apply date range filter on ExpenseMaster
     if (startDate && endDate) {
       expenseMasterWhereCondition.expenceDate = {
-        [Op.between]: [new Date(startDate), new Date(endDate)], // Filter expenses within the date range
+        [Op.between]: [new Date(startDate), new Date(endDate)],
       };
     } else if (startDate) {
       expenseMasterWhereCondition.expenceDate = {
-        [Op.gte]: new Date(startDate), // Expenses from startDate onwards
+        [Op.gte]: new Date(startDate),
       };
     } else if (endDate) {
       expenseMasterWhereCondition.expenceDate = {
-        [Op.lte]: new Date(endDate), // Expenses up to endDate
+        [Op.lte]: new Date(endDate),
       };
     }
 
-    // Apply project-wise and expense-wise filters on ExpenseDetail
     if (projectId) {
       expenseDetailWhereCondition.projectId = projectId;
     }
@@ -292,23 +289,27 @@ exports.getAllExpenses = async (req, res) => {
       expenseDetailWhereCondition.ExpenseHeadId = ExpenseHeadId;
     }
 
-    // Fetch expenses with filters applied
     const expenses = await ExpenseMaster.findAll({
       where: Object.keys(expenseMasterWhereCondition).length
         ? expenseMasterWhereCondition
-        : undefined, // Apply filters only if they exist
+        : undefined,
       include: [
         {
           model: ExpenseDetail,
           as: "details",
           where: Object.keys(expenseDetailWhereCondition).length
             ? expenseDetailWhereCondition
-            : undefined, // Apply filters only if they exist
+            : undefined,
+          include: [
+            {
+              model: ExpenseHead,
+              as: "expenseHead",
+            },
+          ],
         },
       ],
     });
 
-    // Check if any expenses exist
     if (!expenses || expenses.length === 0) {
       return res.status(404).json({
         status: false,
