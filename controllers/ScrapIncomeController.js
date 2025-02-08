@@ -57,8 +57,8 @@ exports.createScrapIncome = async (req, res) => {
   const { incomes } = req.body;
   const userId = req.userId;
 
-  console.log("Received payload:", req.body); // Log full request body
-  console.log("Extracted incomes:", incomes); // Log extracted incomes
+  console.log("Received payload:", req.body);
+  console.log("Extracted incomes:", incomes);
 
   if (!incomes || !Array.isArray(incomes) || incomes.length === 0) {
     return res
@@ -70,7 +70,7 @@ exports.createScrapIncome = async (req, res) => {
     const createdIncomes = [];
 
     for (const incomeData of incomes) {
-      console.log("Processing income data:", incomeData); // Log each income entry
+      console.log("Processing income data:", incomeData);
 
       const {
         projectId,
@@ -79,6 +79,12 @@ exports.createScrapIncome = async (req, res) => {
         paymentMode,
         dateReceived,
         PartnerId,
+        buyerName,
+        narration,
+        "Income Head": incomeHead,
+        chequeDate,
+        bankName,
+        chequeNumber,
       } = incomeData;
 
       if (!projectId) {
@@ -103,6 +109,17 @@ exports.createScrapIncome = async (req, res) => {
           .json({ success: false, message: "Date received is required" });
       }
 
+      // Validate cheque fields only if payment mode is cheque
+      if (paymentMode.toLowerCase() === "cheque") {
+        if (!chequeDate || !bankName || !chequeNumber) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Cheque date, bank name, and cheque number are required for cheque payments",
+          });
+        }
+      }
+
       const income = await Income.create({
         projectId,
         incomeType,
@@ -110,11 +127,24 @@ exports.createScrapIncome = async (req, res) => {
         paymentMode,
         dateReceived,
         PartnerId,
+        incomeHead, // Mapped from "Income Head"
         createdBy: userId,
         updatedBy: userId,
       });
 
       createdIncomes.push(income);
+
+      const scrapIncome = await ScrapIncome.create({
+        incomeId: income.id,
+        buyerName,
+        narration: narration,
+        chequeDate: paymentMode.toLowerCase() === "cheque" ? chequeDate : null,
+        bankName: paymentMode.toLowerCase() === "cheque" ? bankName : null,
+        chequeNumber:
+          paymentMode.toLowerCase() === "cheque" ? chequeNumber : null,
+        createdBy: userId,
+        updatedBy: userId,
+      });
     }
 
     return res.status(200).json({

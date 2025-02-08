@@ -365,7 +365,7 @@ Permission.belongsToMany(Role, {
   as: "Roles",
   foreignKey: "permission",
 });
-  
+
 // expense head and user relations
 
 ExpenseMaster.hasMany(ExpenseDetail, {

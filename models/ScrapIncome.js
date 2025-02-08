@@ -19,6 +19,10 @@ const ScrapIncome = sequelize.define("ScrapIncome", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  narration: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   buyerName: {
     type: DataTypes.STRING,
     allowNull: true,
