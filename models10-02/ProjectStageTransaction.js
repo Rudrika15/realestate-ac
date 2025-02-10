@@ -1,47 +1,32 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
+const ProjectStageTransaction = sequelize.define("ProjectStageTransaction", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  bookingId: {
+  projectStageId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
-    allowNull: false,
-    defaultValue: "Installment",
-  },
-  frequency: {
+  status: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  defaultDate: {
+  projectcompletionDate: {
     type: DataTypes.DATE,
     allowNull: true,
   },
-  loanStatus: {
-    type: DataTypes.ENUM("In Progress", "Completed"),
-    allowNull: false,
-    defaultValue: "In Progress",
+  actualCompletionDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
-  loanBankName: {
+  projectWingId: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: true,
   },
-  loanAgentName: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  isByBuilder: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -60,4 +45,4 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
   },
 });
 
-module.exports = BookingPaymentTerms;
+module.exports = ProjectStageTransaction;

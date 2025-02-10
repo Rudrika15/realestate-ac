@@ -435,10 +435,10 @@ BookingPaymentTermsDetail.belongsTo(BookingPaymentTerms, {
 });
 // Sync the database
 
-// sequelize
-//   .sync({ alter: true })
-//   .then(() => console.log("All models synced"))
-//   .catch((err) => console.log(err));
+sequelize
+  .sync({ alter: true })
+  .then(() => console.log("All models synced"))
+  .catch((err) => console.log(err));
 
 module.exports = {
   User,

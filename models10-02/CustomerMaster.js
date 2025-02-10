@@ -1,47 +1,29 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
+const CustomerMaster = sequelize.define("CustomerMaster", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  bookingId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
-    allowNull: false,
-    defaultValue: "Installment",
-  },
-  frequency: {
+  customerName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  defaultDate: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  loanStatus: {
-    type: DataTypes.ENUM("In Progress", "Completed"),
+  type: {
+    type: DataTypes.ENUM("Primary", "Others"),
     allowNull: false,
-    defaultValue: "In Progress",
+    defaultValue: "Primary",
   },
-  loanBankName: {
+  address: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  loanAgentName: {
+  mobileNumber: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  isByBuilder: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-
   isDeleted: {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
@@ -60,4 +42,4 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
   },
 });
 
-module.exports = BookingPaymentTerms;
+module.exports = CustomerMaster;

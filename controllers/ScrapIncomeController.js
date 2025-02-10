@@ -68,6 +68,7 @@ exports.createScrapIncome = async (req, res) => {
 
   try {
     const createdIncomes = [];
+    const createdScrapIncomes = [];
 
     for (const incomeData of incomes) {
       console.log("Processing income data:", incomeData);
@@ -78,10 +79,10 @@ exports.createScrapIncome = async (req, res) => {
         amount,
         paymentMode,
         dateReceived,
+        incomeHeadId,
         PartnerId,
         buyerName,
         narration,
-        "Income Head": incomeHead,
         chequeDate,
         bankName,
         chequeNumber,
@@ -126,8 +127,8 @@ exports.createScrapIncome = async (req, res) => {
         amount,
         paymentMode,
         dateReceived,
+        incomeHeadId,
         PartnerId,
-        incomeHead, // Mapped from "Income Head"
         createdBy: userId,
         updatedBy: userId,
       });
@@ -145,11 +146,16 @@ exports.createScrapIncome = async (req, res) => {
         createdBy: userId,
         updatedBy: userId,
       });
+
+      createdScrapIncomes.push(scrapIncome);
     }
 
     return res.status(200).json({
       success: true,
-      data: createdIncomes,
+      data: {
+        incomes: createdIncomes,
+        scrapIncomes: createdScrapIncomes,
+      },
     });
   } catch (error) {
     console.error("Error details:", error);
@@ -162,12 +168,30 @@ exports.createScrapIncome = async (req, res) => {
 
 exports.getAllScrapIncomes = async (req, res) => {
   try {
-    const scrapIncomes = await sequelize.query(
-      `SELECT s.*,ih.incomeHeadName,i.*,p.projectName FROM ScrapIncomes s, IncomeHeads ih ,Incomes i ,Projects p WHERE p.id =i.projectId and ih.id =s.incomeHeadId and s.incomeId =i.id;`,
-      {
-        type: sequelize.QueryTypes.SELECT,
-      }
-    );
+    const scrapIncomes = await Income.findAll({
+      include: [
+        {
+          model: Project,
+          attributes: ["id", "projectName"],
+        },
+        {
+          model: IncomeHead,
+          as: "IncomeHead",
+          attributes: ["id", "incomeHeadName"],
+        },
+        {
+          model: ScrapIncome,
+          attributes: [
+            "id",
+            "buyerName",
+            "narration",
+            "chequeDate",
+            "bankName",
+            "chequeNumber",
+          ],
+        },
+      ],
+    });
 
     return res.status(200).json({
       success: true,

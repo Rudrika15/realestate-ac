@@ -27,7 +27,7 @@ exports.storeBooking = async (req, res) => {
       // "mobileNumber",
       "selectPlan",
       "frequency",
-      "defaultDate",
+      // "defaultDate",
       "isByBuilder",
       "installmentDetails",
     ];

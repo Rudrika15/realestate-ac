@@ -1,45 +1,49 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const Project = require("./Project");
 
-const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
+const BookingMaster = sequelize.define("BookingMaster", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  bookingId: {
+  projectId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
+  projectUnitId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: "Installment",
   },
-  frequency: {
+  brokerId: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  defaultDate: {
-    type: DataTypes.DATE,
     allowNull: true,
   },
-  loanStatus: {
-    type: DataTypes.ENUM("In Progress", "Completed"),
-    allowNull: false,
-    defaultValue: "In Progress",
-  },
-  loanBankName: {
-    type: DataTypes.STRING,
+  bookingDate: {
+    type: DataTypes.DATE,
     allowNull: false,
   },
-  loanAgentName: {
-    type: DataTypes.STRING,
+  saleDeedAmount: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
-  isByBuilder: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+  extraWorkAmount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  otherWorkAmount: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  approvalStatus: {
+    type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
+    allowNull: false,
+    defaultValue: "Pending",
+  },
+  approvalDate: {
+    type: DataTypes.DATE,
+    allowNull: true,
   },
 
   isDeleted: {
@@ -60,4 +64,4 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
   },
 });
 
-module.exports = BookingPaymentTerms;
+module.exports = BookingMaster;

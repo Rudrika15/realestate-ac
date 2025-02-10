@@ -179,6 +179,7 @@ exports.projectUnit = async (req, res) => {
       {
         where: {
           projectId: projectId,
+          currerntStatus: "Unsold",
         },
       },
       {

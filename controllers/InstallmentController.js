@@ -78,13 +78,11 @@ exports.createInstallment = async (req, res) => {
       createdBy: userId,
       updatedBy: userId,
     });
-    return res
-      .status(200)
-      .json({
-        status: true,
-        message: "Installment created successfully",
-        data: installment,
-      });
+    return res.status(200).json({
+      status: true,
+      message: "Installment created successfully",
+      data: installment,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ status: false, message: error.message });

@@ -1,45 +1,36 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
+const { ExpenseHead } = require("./index10-02");
 
-const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
+const ExpenseDetail = sequelize.define("ExpenseDetail", {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  bookingId: {
+  expenseMasterId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
+  projectId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: "Installment",
   },
-  frequency: {
+  name: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  defaultDate: {
-    type: DataTypes.DATE,
     allowNull: true,
   },
-  loanStatus: {
-    type: DataTypes.ENUM("In Progress", "Completed"),
+  expenseHeadId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-    defaultValue: "In Progress",
   },
-  loanBankName: {
+  naration: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  loanAgentName: {
-    type: DataTypes.STRING,
+  amount: {
+    type: DataTypes.INTEGER,
     allowNull: false,
-  },
-  isByBuilder: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
   },
 
   isDeleted: {
@@ -52,12 +43,12 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
   },
 });
 
-module.exports = BookingPaymentTerms;
+module.exports = ExpenseDetail;
