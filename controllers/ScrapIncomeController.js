@@ -1,3 +1,4 @@
+const e = require("cors");
 const sequelize = require("../config/database");
 const {
   Income,
@@ -15,6 +16,18 @@ exports.createIncomeHead = async (req, res) => {
       return res.status(200).json({
         success: false,
         message: "Income head name is required",
+      });
+    }
+    const existIncomeHead = await IncomeHead.findOne({
+      where: {
+        incomeHeadName: incomeHeadName,
+      },
+    });
+
+    if (existIncomeHead) {
+      return res.status(200).json({
+        status: false,
+        message: "Income head already exists",
       });
     }
     const userId = req.userId;

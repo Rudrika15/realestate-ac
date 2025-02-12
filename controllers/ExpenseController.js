@@ -494,6 +494,15 @@ exports.createExpenseHead = async (req, res) => {
         message: "expenseHeadName is required",
       });
     }
+    const existingExpenseHead = await ExpenseHead.findOne({
+      where: { ExpenseHeadName: expenseHeadName },
+    });
+    if (existingExpenseHead) {
+      return res.status(200).json({
+        status: false,
+        message: "Expense head already exists",
+      });
+    }
     const expenseHead = await ExpenseHead.create({
       ExpenseHeadName: expenseHeadName,
       createdBy: userId,
