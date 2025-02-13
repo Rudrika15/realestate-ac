@@ -26,7 +26,7 @@ const PartnerIncome = require("./PartnerIncome");
 const ScrapIncome = require("./ScrapIncome");
 const Income = require("./Income");
 const IncomeInstallment = require("./IncomeInstallment");
-
+const UserProject = require("./UserProject");
 // create by and update by relations
 // for user
 
@@ -436,7 +436,7 @@ BookingPaymentTermsDetail.belongsTo(BookingPaymentTerms, {
 // Sync the database
 
 // sequelize
-//   .sync({ alter: true })
+//   .sync({ alter: false, force: false })
 //   .then(() => console.log("All models synced"))
 //   .catch((err) => console.log(err));
 
@@ -468,4 +468,5 @@ module.exports = {
   ScrapIncome,
   Income,
   IncomeInstallment,
+  UserProject,
 };

@@ -136,7 +136,7 @@ exports.createScrapIncome = async (req, res) => {
 
       const income = await Income.create({
         projectId,
-        incomeType,
+        incomeType: "Others",
         amount,
         paymentMode,
         dateReceived,
@@ -179,9 +179,35 @@ exports.createScrapIncome = async (req, res) => {
   }
 };
 
+const { Op } = require("sequelize");
+
 exports.getAllScrapIncomes = async (req, res) => {
   try {
+    const { incomeHeadId, startDate, endDate, paymentMode } = req.query;
+
+    const whereCondition = {
+      incomeType: "Others",
+    };
+
+    // Filter by Income Head
+    if (incomeHeadId) {
+      whereCondition.incomeHeadId = incomeHeadId;
+    }
+
+    // Filter by Date Range
+    if (startDate && endDate) {
+      whereCondition.createdAt = {
+        [Op.between]: [new Date(startDate), new Date(endDate)],
+      };
+    }
+
+    // Filter by Payment Mode (cash or cheque)
+    if (paymentMode) {
+      whereCondition.paymentMode = paymentMode; // Ensure your model has a paymentMode field
+    }
+
     const scrapIncomes = await Income.findAll({
+      where: whereCondition,
       include: [
         {
           model: Project,

@@ -11,6 +11,10 @@ const ProjectStageTransaction = sequelize.define("ProjectStageTransaction", {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  wings: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   status: {
     type: DataTypes.STRING,
     allowNull: false,

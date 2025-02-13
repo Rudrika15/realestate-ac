@@ -35,6 +35,12 @@ const User = sequelize.define("User", {
   createdBy: {
     type: DataTypes.INTEGER,
     allowNull: true,
+    references: {
+      model: "Users", // Ensure this matches the table name exactly
+      key: "id",
+    },
+    onDelete: "SET NULL",
+    onUpdate: "CASCADE",
   },
   updatedBy: {
     type: DataTypes.INTEGER,

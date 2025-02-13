@@ -1,4 +1,4 @@
-const { User, Role, UserRole, Permission } = require("../models");
+const { User, Role, UserRole, Permission, UserProject } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
@@ -51,9 +51,10 @@ exports.loginUser = async (req, res) => {
 
 exports.storeUser = async (req, res) => {
   try {
-    const { roles, passcode, authPasscode, userName } = req.body;
+    const { roles, passcode, authPasscode, userName, projectIds } = req.body;
 
-    const fields = { roles, passcode, userName };
+    // Validate required fields
+    const fields = { roles, passcode, userName, projectIds };
     for (const field in fields) {
       if (!fields[field]) {
         return res.json({
@@ -70,6 +71,13 @@ exports.storeUser = async (req, res) => {
       });
     }
 
+    if (!Array.isArray(projectIds) || projectIds.length === 0) {
+      return res.json({
+        status: false,
+        message: "Project IDs must be a non-empty array.",
+      });
+    }
+
     const existingUser = await User.findOne({ where: { userName } });
     if (existingUser) {
       return res.json({
@@ -78,20 +86,22 @@ exports.storeUser = async (req, res) => {
       });
     }
 
-    let hashedAuthPasscode = null; // Use 'let' to allow reassignment
+    // Hash passwords
+    let hashedAuthPasscode = null;
     const saltRounds = 10;
-
     const hashedPasscode = await bcrypt.hash(passcode, saltRounds);
     if (authPasscode) {
       hashedAuthPasscode = await bcrypt.hash(authPasscode, saltRounds);
     }
 
+    // Create new user
     const newUser = await User.create({
-      userName: userName,
+      userName,
       passcode: hashedPasscode,
       authPasscode: hashedAuthPasscode,
     });
 
+    // Store user-role relationships
     const roleInstances = await Role.findAll({
       where: { id: roles },
     });
@@ -110,8 +120,17 @@ exports.storeUser = async (req, res) => {
       });
     }
 
+    // Store user-project relationships (for multiple projects)
+    const userProjects = projectIds.map((projectId) => ({
+      userId: newUser.id,
+      projectId: projectId,
+    }));
+
+    await sequelize.models.UserProject.bulkCreate(userProjects);
+
+    // Generate JWT token
     const token = jwt.sign(
-      { userId: newUser.id, userName: newUser.userName, roles: roles },
+      { userId: newUser.id, userName: newUser.userName, roles },
       process.env.JWT_SECRET,
       { expiresIn: "1y" }
     );
@@ -123,6 +142,7 @@ exports.storeUser = async (req, res) => {
         id: newUser.id,
         userName: newUser.userName,
         roles,
+        projectIds,
       },
       token,
     });

@@ -1,4 +1,5 @@
 const { Sequelize } = require("sequelize");
+// const { Op, QueryTypes } = require("sequelize");
 const {
   BookingMaster,
   CustomerMaster,
@@ -8,6 +9,9 @@ const {
   BookingPaymentTermsDetail,
   ProjectUnit,
 } = require("../models");
+
+const { QueryTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
 exports.storeBooking = async (req, res) => {
   try {
@@ -176,67 +180,78 @@ exports.storeBooking = async (req, res) => {
 
 exports.getBookings = async (req, res) => {
   try {
-    let { page = 1, limit = 10 } = req.query;
+    const { customerName, projectName, unitNo } = req.query;
 
-    // Parse the page and limit as integers
-    page = parseInt(page);
-    limit = parseInt(limit);
+    let whereClause = ` WHERE c.type = 'Primary' `;
 
-    // Ensure page and limit are valid numbers
-    if (page < 1) page = 1;
-    if (limit < 1) limit = 10;
+    if (customerName) {
+      whereClause += ` AND c.customerName LIKE :customerName `;
+    }
+    if (projectName) {
+      whereClause += ` AND p.projectName LIKE :projectName `;
+    }
+    if (unitNo) {
+      whereClause += ` AND pu.unitNo LIKE :unitNo `;
+    }
 
-    // Calculate the offset based on the page
-    const offset = (page - 1) * limit;
+    const query = `
+      SELECT 
+        b.*, 
+        p.projectName, 
+        pu.unitNo, 
+        c.id as customerId, 
+        c.customerName, 
+        c.address, 
+        c.mobileNumber
+      FROM BookingMasters b
+      JOIN Projects p ON p.id = b.projectId
+      JOIN ProjectUnits pu ON pu.id = b.projectUnitId
+      JOIN BookingCustomers bc ON bc.bookingId = b.id
+      JOIN CustomerMasters c ON c.id = bc.customerId
+      ${whereClause}
+    `;
 
-    // Fetch paginated booking details
-    const { count, rows: bookings } = await BookingMaster.findAndCountAll({
-      include: [
-        {
-          model: BookingCustomer,
-          required: false,
-        },
-        {
-          model: BookingPaymentTerms,
-          where: { isDeleted: false },
-          required: false,
-          include: [
-            {
-              model: BookingPaymentTermsDetail,
-              required: false,
-            },
-          ],
-        },
-      ],
-      limit,
-      offset,
-      order: [["createdAt", "DESC"]],
+    const bookings = await sequelize.query(query, {
+      type: QueryTypes.SELECT,
+      replacements: {
+        customerName: customerName ? `%${customerName}%` : null,
+        projectName: projectName ? `%${projectName}%` : null,
+        unitNo: unitNo ? `%${unitNo}%` : null,
+      },
     });
 
-    // Calculate the total number of pages
-    const totalPages = Math.ceil(count / limit);
-
-    // Send the paginated response
-    res.status(200).json({
-      totalRecords: count,
-      totalPages,
-      currentPage: page,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1,
-      bookings,
+    return res.status(200).json({
+      status: true,
+      message: "Bookings fetched successfully",
+      data: bookings,
     });
   } catch (error) {
     console.error("Error fetching booking list:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({
+      status: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 exports.getProjectWiseStages = async (req, res) => {
   try {
-    const projectId = req.params.projectId;
-    const stages = await ProjectStage.findAll({
-      where: { projectId },
+    const { projectId } = req.params;
+    const { projectWingId } = req.params;
+
+    const query = `
+      SELECT ps.projectStageName, p.*
+      FROM ProjectStages ps
+      INNER JOIN ProjectStageTransactions p ON p.projectStageId = ps.id
+      WHERE ps.projectId = :projectId AND p.projectWingId = :projectWingId
+    `;
+
+    const stages = await sequelize.query(query, {
+      replacements: { projectId, projectWingId },
+      type: QueryTypes.SELECT,
     });
+
     return res.status(200).json({
       status: true,
       message: "Project stages fetched successfully",

@@ -10,6 +10,10 @@ const {
 
 router.post("/store-booking", storeBooking);
 router.get("/get-bookings", getBookings);
-router.get("/project-wise-stages/:projectId", getProjectWiseStages);
+router.get(
+  "/project-wise-stages/:projectId/:projectWingId",
+  getProjectWiseStages
+);
+
 router.get("/get-booking-and-payment-history", getBookingAndPaymentHistory);
 module.exports = router;
