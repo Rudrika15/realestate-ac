@@ -139,7 +139,7 @@ exports.getInstallments = async (req, res) => {
 
     if (!installments || installments.length === 0) {
       return res
-        .status(404)
+        .status(200)
         .json({ status: false, message: "No installment found" });
     }
 

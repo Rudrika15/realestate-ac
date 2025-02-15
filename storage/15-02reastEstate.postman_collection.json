@@ -143,7 +143,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userName\":\"Raviraj\",\r\n    \"passcode\":\"123456\"\r\n}",
+							"raw": "{\r\n    \"userName\":\"raja\",\r\n    \"passcode\":\"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -151,9 +151,9 @@
 							}
 						},
 						"url": {
-							"raw": "{{local}}v1/users/login",
+							"raw": "{{live}}v1/users/login",
 							"host": [
-								"{{local}}v1"
+								"{{live}}v1"
 							],
 							"path": [
 								"users",
@@ -1390,7 +1390,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUzNjgxMywiZXhwIjoxNzM5NTQwNDEzfQ.4xCtrmTNAF9Syl548jzccpZ610_h2Dqrf2x5TnC_SEE",
 									"type": "string"
 								}
 							]
@@ -1399,7 +1399,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"voucherNo\": 123,\r\n  \"expenseDate\": \"2025-01-25\",\r\n  \"amountTotal\": \"15000\",\r\n  \"projectIds\": [40, 45],\r\n  \"ExpenseHeadId\": [1, 2],\r\n  \"naration\": [\"Office supplies\", \"Travel expenses\"],\r\n  \"amount\": [\"5000\", \"10000\"]\r\n}\r\n",
+							"raw": "{\r\n  \"voucherNo\": \"321654\",\r\n  \"expenseDate\": \"2025-02-14\",\r\n  \"amountTotal\": 5000,\r\n  \"expenseDetails\": [\r\n    {\r\n      \"projectId\": 1,\r\n      \"ExpenseHeadId\": 2,\r\n      \"naration\": \"Purchase of office supplies\",\r\n      \"amount\": 2000\r\n    },\r\n    {\r\n      \"projectId\": 2,\r\n      \"ExpenseHeadId\": 3,\r\n      \"naration\": \"Electricity bill payment\",\r\n      \"amount\": 3000\r\n    }\r\n  ]\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1484,7 +1484,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTczODE0NzkzMSwiZXhwIjoxNzM4MTUxNTMxfQ.bwFFEY0O37gQXMztA0tL34x0ciyueAE024RKkcHyCg4",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUzMTc4OSwiZXhwIjoxNzM5NTM1Mzg5fQ.Pjo5wFXWDtxdGLrZwBhdIDOyg-jxu9NgJ8S5HVCZhkM",
 									"type": "string"
 								}
 							]
@@ -1492,14 +1492,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{live}}v1/expense/get-expense-by-id/3",
+							"raw": "{{live}}v1/expense/get-expense-by-id/27",
 							"host": [
 								"{{live}}v1"
 							],
 							"path": [
 								"expense",
 								"get-expense-by-id",
-								"3"
+								"27"
 							]
 						}
 					},
@@ -1513,7 +1513,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUyOTA4MywiZXhwIjoxNzM5NTMyNjgzfQ.Yp-dZoSWkcRUhvaxoSlD2g04OAk8Xx9UkjQAciEgmRY",
 									"type": "string"
 								}
 							]
@@ -1522,7 +1522,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"naration\":\"Other expense\",\r\n    \"amount\":5500,\r\n    \"projectId\":2,\r\n    \"expenseHeadId\":2\r\n\r\n\r\n}",
+							"raw": "{\r\n    \"naration\":\"Other expense\",\r\n    \"amount\":123,\r\n    \"projectId\":2,\r\n    \"expenseHeadId\":2,\r\n    \"voucherNo\":\"555\",\r\n    \"expenseDate\":\"2025-01-25\"\r\n\r\n\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1530,14 +1530,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{local}}v1/expense/update-expense/3",
+							"raw": "{{live}}v1/expense/update-expense/27",
 							"host": [
-								"{{local}}v1"
+								"{{live}}v1"
 							],
 							"path": [
 								"expense",
 								"update-expense",
-								"3"
+								"27"
 							]
 						}
 					},
@@ -1658,6 +1658,102 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "delete-partner-income",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUzMTc4OSwiZXhwIjoxNzM5NTM1Mzg5fQ.Pjo5wFXWDtxdGLrZwBhdIDOyg-jxu9NgJ8S5HVCZhkM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/partnerIncome/delete-partner-income/14",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partnerIncome",
+								"delete-partner-income",
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-partner-income",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUzNjgxMywiZXhwIjoxNzM5NTQwNDEzfQ.4xCtrmTNAF9Syl548jzccpZ610_h2Dqrf2x5TnC_SEE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"projectId\": 45,\r\n  \"amount\": 3000,\r\n  \"paymentMode\": \"Cash\",\r\n  \"dateReceived\": \"2025-02-14\",\r\n  \"partnerId\": 65,\r\n  \"bankName\": \"SBI Bank\",\r\n  \"chequeNumber\": \"123456\",\r\n  \"chequeDate\": \"2025-02-15\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/partnerIncome/update-partner-income/13",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partnerIncome",
+								"update-partner-income",
+								"13"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-single-partner-income/13",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUzMTc4OSwiZXhwIjoxNzM5NTM1Mzg5fQ.Pjo5wFXWDtxdGLrZwBhdIDOyg-jxu9NgJ8S5HVCZhkM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/partnerIncome/get-single-partner-income/13",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"partnerIncome",
+								"get-single-partner-income",
+								"13"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1696,6 +1792,102 @@
 							"path": [
 								"scrapIncome",
 								"store-scrap-income"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-scrap-income/12",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTU1MzgwMywiZXhwIjoxNzM5NTU3NDAzfQ.ZGKYdiV7qAbF61tT4TPGaHUNn-gXVWOUSvGjUHXIy8E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"buyerName\":\"\",\r\n      \"narration\":\"Test narration\",\r\n      \"chequeNumber\":\"654789\",\r\n      \"chequeDate\":\"2025-02-10\",\r\n      \"bankName\":\"SBI\",\r\n\r\n      \"projectId\":45,\r\n      \"incomeHeadId\":1,\r\n      \"amount\":150000,\r\n      \"paymentMode\":\"Cheque\",\r\n          // \"paymentMode\":\"Cash\",\r\n\r\n      \"dateReceived\":\"2025-02-14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/scrapIncome/update-scrap-income/11",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"scrapIncome",
+								"update-scrap-income",
+								"11"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-scrap-income-by-id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTU1MDE0NCwiZXhwIjoxNzM5NTUzNzQ0fQ.Nu8XXgS6IJuYyZG5z8g8J9uHtgLV5ZrPUaVDgUp4r3s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/scrapIncome/get-scrap-income-by-id/26",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"scrapIncome",
+								"get-scrap-income-by-id",
+								"26"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete-scrap-income/12",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTU1MDE0NCwiZXhwIjoxNzM5NTUzNzQ0fQ.Nu8XXgS6IJuYyZG5z8g8J9uHtgLV5ZrPUaVDgUp4r3s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/scrapIncome/delete-scrap-income/12",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"scrapIncome",
+								"delete-scrap-income",
+								"12"
 							]
 						}
 					},
@@ -1767,43 +1959,6 @@
 					"response": []
 				},
 				{
-					"name": "store-installments",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"bookingId\": 45, // 🔹 Add correct booking ID\r\n    \"incomeType\": \"Installment\",\r\n    \"dateReceived\": \"2025-02-10\",\r\n    \"amount\": 300000,\r\n    \"receiptNo\": \"6542685\",\r\n    \"receiptName\": \"Khilen Maniyar\",\r\n    \"projectId\": 49,\r\n    \"paymentMode\": \"Cheque\", // 🔹 Example: \"Cash\" or \"Cheque\"\r\n    \"bankName\": \"HDFC\",\r\n    \"chequeNumber\": \"56468213489\",\r\n    \"chequeDate\": \"2025-02-10\",\r\n    \"loanId\": null, // 🔹 If applicable, replace null with loan ID\r\n    \"verificationStatus\": \"Pending\",\r\n    \"receiptURL\": null, // 🔹 Provide URL if available\r\n    \"receiptDate\": \"2025-02-10\",\r\n    \"receivedFrom\": \"Office\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{local}}v1/installment/store-installment",
-							"host": [
-								"{{local}}v1"
-							],
-							"path": [
-								"installment",
-								"store-installment"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "get-scrap-income",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -1869,7 +2024,7 @@
 			"name": "Installment",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "store",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1907,7 +2062,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "{{token}}",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTUxOTM0NSwiZXhwIjoxNzM5NTIyOTQ1fQ.91z3X8FugQcPADDccZqjE8kC-KRm-elhHQqS9hpKAF4",
 									"type": "string"
 								}
 							]
@@ -1924,13 +2079,93 @@
 							}
 						},
 						"url": {
-							"raw": "{{local}}v1/bookings/get-booking-and-payment-history",
+							"raw": "{{local}}v1/bookings/get-booking-and-payment-history?customerName=Megha&mobileNumber=45678912340",
 							"host": [
 								"{{local}}v1"
 							],
 							"path": [
 								"bookings",
 								"get-booking-and-payment-history"
+							],
+							"query": [
+								{
+									"key": "customerName",
+									"value": "Megha"
+								},
+								{
+									"key": "unitNo",
+									"value": "A-101",
+									"disabled": true
+								},
+								{
+									"key": "mobileNumber",
+									"value": "45678912340"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store-installments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookingId\": 45, // 🔹 Add correct booking ID\r\n    \"incomeType\": \"Installment\",\r\n    \"dateReceived\": \"2025-02-10\",\r\n    \"amount\": 300000,\r\n    \"receiptNo\": \"6542685\",\r\n    \"receiptName\": \"Khilen Maniyar\",\r\n    \"projectId\": 49,\r\n    \"paymentMode\": \"Cheque\", // 🔹 Example: \"Cash\" or \"Cheque\"\r\n    \"bankName\": \"HDFC\",\r\n    \"chequeNumber\": \"56468213489\",\r\n    \"chequeDate\": \"2025-02-10\",\r\n    \"loanId\": null, // 🔹 If applicable, replace null with loan ID\r\n    \"verificationStatus\": \"Pending\",\r\n    \"receiptURL\": null, // 🔹 Provide URL if available\r\n    \"receiptDate\": \"2025-02-10\",\r\n    \"receivedFrom\": \"Office\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/installment/store-installment",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"installment",
+								"store-installment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-installment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTQ0OTY5MywiZXhwIjoxNzM5NDUzMjkzfQ.JD2cFdbHGQ0hOhdUQUGt1z3ygTYQidWUgohQwS4aYNk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/installment/get-installment",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"installment",
+								"get-installment"
 							]
 						}
 					},

@@ -193,7 +193,7 @@ exports.createExpense = async (req, res) => {
     // Prepare expense details
     const formattedExpenseDetails = expenseDetails.map((expense) => ({
       ExpenseMasterId: expenseMasterId,
-      name: " ", // You may need to update this field if it has a specific purpose
+      name: " ",
       projectId: expense.projectId,
       ExpenseHeadId: expense.ExpenseHeadId,
       naration: expense.naration,
@@ -334,38 +334,54 @@ exports.getAllExpenses = async (req, res) => {
 
 exports.deleteExpenseDetail = async (req, res) => {
   const { id } = req.params;
+
   try {
+    // Find expense detail
     const expenseDetail = await ExpenseDetail.findOne({ where: { id } });
-    const expenseMasterId = expenseDetail.ExpenseMasterId;
+
     if (!expenseDetail) {
-      return res.status(200).json({
+      return res.status(404).json({
         status: false,
         message: "Expense detail not found",
+        // data: expenseDetail,1111
       });
     }
-    //find total form expenseMasterId
-    const totalAmount = await ExpenseMaster.findOne({
+
+    const expenseMasterId = expenseDetail.expenseMasterId;
+
+    // Find the associated ExpenseMaster record
+    const expenseMaster = await ExpenseMaster.findOne({
       where: { id: expenseMasterId },
     });
-    const total = totalAmount.totalAmount - expenseDetail.amount;
-    //update total in expenseMaster
-    if (total < 0) {
+
+    if (!expenseMaster) {
+      return res.status(404).json({
+        status: false,
+        message: "Expense master not found",
+      });
+    }
+
+    const updatedTotal = expenseMaster.totalAmount - expenseDetail.amount;
+
+    // Delete expense detail first
+    await expenseDetail.destroy();
+
+    // Update or delete ExpenseMaster based on the updated total amount
+    if (updatedTotal > 0) {
       await ExpenseMaster.update(
-        { totalAmount: total },
+        { totalAmount: updatedTotal },
         { where: { id: expenseMasterId } }
       );
     } else {
       await ExpenseMaster.destroy({ where: { id: expenseMasterId } });
     }
 
-    await expenseDetail.destroy();
-
     return res.status(200).json({
       status: true,
       message: "Expense detail deleted successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       status: false,
       error: error.message,
       message: "An error occurred while deleting the expense detail",
@@ -460,10 +476,10 @@ exports.updateExpenseDetail = async (req, res) => {
 
     //find expense total form expense detail
     const expenseTotal = await ExpenseDetail.sum("amount", {
-      where: { ExpenseMasterId: expenseDetail.ExpenseMasterId },
+      where: { expenseMasterId: expenseDetail.expenseMasterId },
     });
     const expenseMaster = await ExpenseMaster.findOne({
-      where: { id: expenseDetail.ExpenseMasterId },
+      where: { id: expenseDetail.expenseMasterId },
     });
 
     expenseMaster.expenceDate = expenseDate;

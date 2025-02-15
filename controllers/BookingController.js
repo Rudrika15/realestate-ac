@@ -241,7 +241,7 @@ exports.getProjectWiseStages = async (req, res) => {
     const { projectWingId } = req.params;
 
     const query = `
-      SELECT ps.projectStageName, p.*
+      SELECT ps.projectStageName,ps.projectStagePer, p.*
       FROM ProjectStages ps
       INNER JOIN ProjectStageTransactions p ON p.projectStageId = ps.id
       WHERE ps.projectId = :projectId AND p.projectWingId = :projectWingId
@@ -269,77 +269,102 @@ exports.getProjectWiseStages = async (req, res) => {
 
 exports.getBookingAndPaymentHistory = async (req, res) => {
   try {
-    const { customerName } = req.body;
+    const { customerName, mobileNumber, unitNo } = req.query; // Using query parameters
 
-    if (!customerName) {
+    if (!customerName && !mobileNumber && !unitNo) {
       return res.status(400).json({
         status: false,
-        message: "Customer name is required",
+        message: "At least one of customerName, mobileNumber, or unitNo is required",
       });
     }
 
-    const findCustomerDetails = await CustomerMaster.findOne({
-      where: {
-        customerName: {
-          [Sequelize.Op.like]: `%${customerName}%`,
-        },
-      },
-    });
+    const whereClause = {};
+
+    if (customerName) {
+      whereClause.customerName = { [Sequelize.Op.eq]: customerName }; // Exact match
+    }
+
+    if (mobileNumber) {
+      whereClause.mobileNumber = { [Sequelize.Op.eq]: mobileNumber }; // Exact match
+    }
+
+    const findCustomerDetails = await CustomerMaster.findOne({ where: whereClause });
 
     if (!findCustomerDetails) {
-      return res.status(404).json({ message: "Customer not found" });
+      return res.status(404).json({
+        status: false,
+        message: "Customer not found",
+      });
     }
 
     const findCustomer = await BookingCustomer.findOne({
-      where: {
-        customerId: findCustomerDetails.id,
-      },
+      where: { customerId: findCustomerDetails.id },
       include: [
         {
           model: CustomerMaster,
-          as: "customer", // Correct alias
-          attributes: ["id", "customerName"],
+          as: "customer",
+          attributes: ["id", "customerName", "mobileNumber"],
         },
       ],
     });
 
     if (!findCustomer) {
-      return res
-        .status(404)
-        .json({ message: "Booking not found for this customer" });
+      return res.status(404).json({
+        status: false,
+        message: "Booking not found for this customer",
+      });
+    }
+
+    const bookingWhereClause = { id: findCustomer.bookingId };
+
+    const includeClause = [
+      {
+        model: BookingPaymentTerms,
+        as: "paymentTerms",
+        where: { isDeleted: false },
+        required: false,
+        include: [
+          {
+            model: BookingPaymentTermsDetail,
+            as: "paymentDetails",
+            required: false,
+          },
+        ],
+      },
+      {
+        model: BookingCustomer,
+        as: "customers",
+        include: [
+          {
+            model: CustomerMaster,
+            as: "customer",
+            attributes: ["id", "customerName", "mobileNumber"],
+          },
+        ],
+      },
+    ];
+
+    // If unitNo is provided, filter bookings where the related ProjectUnit has the given unitNo
+    if (unitNo) {
+      includeClause.push({
+        model: ProjectUnit, // Assuming this is the table containing unitNo
+        as: "projectUnit",
+        where: { unitNo: { [Sequelize.Op.eq]: unitNo } }, // Exact match for unit number
+        required: true, // Ensures only matching unit numbers are returned
+      });
     }
 
     const findBookingDetails = await BookingMaster.findOne({
-      where: {
-        id: findCustomer.bookingId,
-      },
-      include: [
-        {
-          model: BookingPaymentTerms,
-          as: "paymentTerms",
-          where: { isDeleted: false },
-          required: false,
-          include: [
-            {
-              model: BookingPaymentTermsDetail,
-              as: "paymentDetails",
-              required: false,
-            },
-          ],
-        },
-        {
-          model: BookingCustomer,
-          as: "customers", // Correct alias for BookingCustomer
-          include: [
-            {
-              model: CustomerMaster,
-              as: "customer", // Correct alias for CustomerMaster inside BookingCustomer
-              attributes: ["id", "customerName"],
-            },
-          ],
-        },
-      ],
+      where: bookingWhereClause,
+      include: includeClause,
     });
+
+    if (!findBookingDetails) {
+      return res.status(404).json({
+        status: false,
+        message: "No booking found with the given unit number",
+      });
+    }
 
     return res.status(200).json({
       status: true,
@@ -358,3 +383,4 @@ exports.getBookingAndPaymentHistory = async (req, res) => {
     });
   }
 };
+

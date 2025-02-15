@@ -419,8 +419,20 @@ BookingMaster.hasMany(BookingPaymentTerms, {
   foreignKey: "bookingId",
   as: "paymentTerms",
 });
+
 BookingPaymentTerms.belongsTo(BookingMaster, {
   foreignKey: "bookingId",
+  as: "booking",
+});
+// BookingMaster Model
+BookingMaster.belongsTo(ProjectUnit, {
+  foreignKey: "projectUnitId",
+  as: "projectUnit",
+});
+
+// ProjectUnit Model (if needed)
+ProjectUnit.hasOne(BookingMaster, {
+  foreignKey: "projectUnitId", // `projectUnitId` in BookingMaster links to ProjectUnit
   as: "booking",
 });
 

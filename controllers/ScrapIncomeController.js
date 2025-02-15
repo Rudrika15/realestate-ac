@@ -8,6 +8,7 @@ const {
   BookingMaster,
 } = require("../models");
 const InstallmentIncome = require("../models/IncomeInstallment");
+const { QueryTypes } = require("sequelize");
 
 exports.createIncomeHead = async (req, res) => {
   try {
@@ -178,8 +179,6 @@ exports.createScrapIncome = async (req, res) => {
     });
   }
 };
-
-const { Op } = require("sequelize");
 
 exports.getAllScrapIncomes = async (req, res) => {
   try {
@@ -352,5 +351,223 @@ exports.addIncome = async (req, res) => {
       success: false,
       error: error.message,
     });
+  }
+};
+
+exports.getOtherSingleIncome = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const income = await Income.findOne({
+      where: { id },
+      include: [
+        {
+          model: Project,
+          attributes: ["id", "projectName"],
+        },
+        {
+          model: IncomeHead,
+          as: "IncomeHead",
+        },
+        {
+          model: ScrapIncome,
+          attributes: [
+            "id",
+            "buyerName",
+            "narration",
+            "chequeDate",
+            "bankName",
+            "chequeNumber",
+          ],
+        },
+        {
+          model: ScrapIncome,
+        },
+      ],
+    });
+
+    if (!income) {
+      return res.status(404).json({ message: "Income not found" });
+    }
+
+    res.status(200).json({ data: income });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.deleteScrapIncome = async (req, res) => {
+  const transaction = await sequelize.transaction(); // Start a transaction
+  try {
+    const id = req.params.id;
+
+    // Fetch Scrap Income
+    const [scrapIncome] = await sequelize.query(
+      "SELECT * FROM ScrapIncomes WHERE incomeId = :id LIMIT 1",
+      {
+        replacements: { id },
+        type: QueryTypes.SELECT,
+        transaction,
+      }
+    );
+
+    if (!scrapIncome) {
+      await transaction.rollback();
+      return res
+        .status(200)
+        .json({ status: false, message: "Scrap Income not found" });
+    }
+
+    const IncomeId = scrapIncome.incomeId;
+
+    // Delete income
+    await sequelize.query("DELETE FROM Incomes WHERE id = :IncomeId", {
+      replacements: { IncomeId },
+      type: QueryTypes.DELETE,
+      transaction,
+    });
+
+    // Delete scrap income
+    await sequelize.query("DELETE FROM ScrapIncomes WHERE id = :id", {
+      replacements: { id },
+      type: QueryTypes.DELETE,
+      transaction,
+    });
+
+    await transaction.commit(); // Commit transaction
+
+    return res.status(200).json({
+      status: true,
+      data: IncomeId,
+      message: "Scrap Income deleted successfully",
+    });
+  } catch (error) {
+    await transaction.rollback(); // Rollback transaction on error
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+exports.updateScrapIncome = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {
+      buyerName,
+      narration,
+      chequeNumber,
+      chequeDate,
+      bankName,
+
+      projectId,
+      incomeHeadId,
+      amount,
+      paymentMode,
+      dateReceived,
+    } = req.body;
+    if (!projectId) {
+      return res.status(200).json({
+        success: false,
+        message: "Project is required",
+      });
+    }
+    if (!incomeHeadId) {
+      return res.status(200).json({
+        success: false,
+        message: "Income Head is required",
+      });
+    }
+    if (!amount) {
+      return res.status(200).json({
+        success: false,
+        message: "Amount is required",
+      });
+    }
+    if (!paymentMode) {
+      return res.status(200).json({
+        success: false,
+        message: "Payment Mode is required",
+      });
+    }
+    if (!dateReceived) {
+      return res.status(200).json({
+        success: false,
+        message: "Date Received is required",
+      });
+    }
+    if (paymentMode == "Cheque") {
+      if (!bankName) {
+        return res.status(200).json({
+          success: false,
+          message: "Bank Name is required",
+        });
+      }
+      if (!chequeNumber) {
+        return res.status(200).json({
+          success: false,
+          message: "Cheque Number is required",
+        });
+      }
+      if (!chequeDate) {
+        return res.status(200).json({
+          success: false,
+          message: "Cheque Date is required",
+        });
+      }
+    }
+    if (!narration) {
+      return res.status(200).json({
+        success: false,
+        message: "Narration is required",
+      });
+    }
+    const userId = req.userId;
+    const scrapIncome = await ScrapIncome.findOne({ where: { id } });
+
+    if (!scrapIncome) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Scrap Income not found" });
+    }
+
+    const incomeId = scrapIncome.incomeId; // Get related Income ID
+
+    // Update ScrapIncome
+    await scrapIncome.update({
+      buyerName,
+      narration,
+      chequeNumber,
+      chequeDate,
+      bankName,
+      projectId,
+      incomeHeadId,
+      amount,
+      paymentMode,
+      dateReceived,
+      updatedBy: userId,
+    });
+
+    // Find and Update Income
+    const income = await Income.findOne({ where: { id: incomeId } });
+
+    if (income) {
+      await income.update({
+        projectId,
+        incomeType: "Others", // Corrected from "Others"
+        amount,
+        incomeHeadId,
+        paymentMode,
+        dateReceived,
+        updatedBy: userId,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Scrap Income updated successfully",
+      data: {
+        scrapIncome,
+        income,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

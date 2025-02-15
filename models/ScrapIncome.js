@@ -15,10 +15,10 @@ const ScrapIncome = sequelize.define("ScrapIncome", {
       key: "id",
     },
   },
-  incomeHeadId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
+  // incomeHeadId: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true,
+  // },
   narration: {
     type: DataTypes.STRING,
     allowNull: true,

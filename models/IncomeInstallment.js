@@ -52,6 +52,10 @@ const InstallmentIncome = sequelize.define("InstallmentIncome", {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  receivedFrom: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   verificationStatus: {
     type: DataTypes.STRING,
     defaultValue: "Pending",

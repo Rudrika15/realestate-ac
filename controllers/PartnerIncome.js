@@ -126,3 +126,132 @@ exports.getAllPartnerIncomes = async (req, res) => {
     });
   }
 };
+exports.deletePartnerIncome = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const partnerIncome = await PartnerIncome.findOne({
+      where: { id: id },
+    });
+
+    if (!partnerIncome) {
+      return res.status(404).json({ message: "Income not found" });
+    }
+    const incomeId = partnerIncome.incomeId;
+    await Income.destroy({ where: { id: incomeId } });
+
+    await partnerIncome.destroy();
+    res.status(200).json({ message: "Income deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.getPartnerIncomeDetail = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const partnerIncome = await PartnerIncome.findOne({
+      where: { id: id },
+      include: [
+        {
+          model: Income,
+          include: [
+            {
+              model: Project,
+              attributes: ["id", "projectName"],
+            },
+          ],
+        },
+        {
+          model: Partner,
+          attributes: ["id", "partnerName"],
+        },
+      ],
+    });
+
+    if (!partnerIncome) {
+      return res.status(404).json({ message: "Income not found" });
+    }
+
+    res.status(200).json({ data: partnerIncome });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.updatePartnerIncome = async (req, res) => {
+  const id = req.params.id;
+  const {
+    projectId,
+    amount,
+    paymentMode,
+    dateReceived,
+    partnerId,
+    bankName,
+    chequeNumber,
+    chequeDate,
+  } = req.body;
+  const userId = req.userId;
+
+  try {
+    const partnerIncome = await PartnerIncome.findByPk(id, {
+      include: [{ model: Income }],
+    });
+    if (!partnerIncome) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Income not found" });
+    }
+
+    const findProject = await Project.findOne({
+      where: { id: projectId },
+    });
+    if (!findProject) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Project not found" });
+    }
+
+    const findPartner = await Partner.findOne({
+      where: { id: partnerId },
+    });
+    if (!findPartner) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Partner not found" });
+    }
+
+    const dateFormatted = new Date(dateReceived);
+    if (isNaN(dateFormatted.getTime())) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid date format" });
+    }
+
+    await partnerIncome.update({
+      partnerId: partnerId ?? partnerIncome.partnerId,
+      bankName: bankName ?? partnerIncome.bankName,
+      chequeNumber: chequeNumber ?? partnerIncome.chequeNumber,
+      chequeDate: chequeDate ?? partnerIncome.chequeDate,
+      updatedBy: userId,
+    });
+
+    if (partnerIncome.Income) {
+      await partnerIncome.Income.update({
+        projectId: projectId ?? partnerIncome.Income.projectId,
+        amount: amount ?? partnerIncome.Income.amount,
+        paymentMode: paymentMode ?? partnerIncome.Income.paymentMode,
+        dateReceived: dateReceived ?? partnerIncome.Income.dateReceived,
+        updatedBy: userId,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Income updated successfully",
+      data: { partnerIncome, income: partnerIncome.Income },
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

@@ -56,15 +56,4 @@ const Income = sequelize.define("Income", {
   },
 });
 
-// Project.hasMany(Income, { foreignKey: "projectId" });
-// Income.belongsTo(Project, { foreignKey: "projectId" });
-// Income.belongsTo(User, { as: "createdByUser", foreignKey: "createdBy" });
-// Income.belongsTo(User, { as: "updatedByUser", foreignKey: "updatedBy" });
-// PartnerIncome.belongsTo(Income, { foreignKey: "incomeId" });
-
-// Ensure PartnerIncome is properly associated
-// if (PartnerIncome) {
-// } else {
-//   console.error("PartnerIncome model is not defined correctly!");
-// }
 module.exports = Income;

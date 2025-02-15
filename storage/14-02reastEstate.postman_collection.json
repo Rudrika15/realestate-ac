@@ -1767,43 +1767,6 @@
 					"response": []
 				},
 				{
-					"name": "store-installments",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"bookingId\": 45, // 🔹 Add correct booking ID\r\n    \"incomeType\": \"Installment\",\r\n    \"dateReceived\": \"2025-02-10\",\r\n    \"amount\": 300000,\r\n    \"receiptNo\": \"6542685\",\r\n    \"receiptName\": \"Khilen Maniyar\",\r\n    \"projectId\": 49,\r\n    \"paymentMode\": \"Cheque\", // 🔹 Example: \"Cash\" or \"Cheque\"\r\n    \"bankName\": \"HDFC\",\r\n    \"chequeNumber\": \"56468213489\",\r\n    \"chequeDate\": \"2025-02-10\",\r\n    \"loanId\": null, // 🔹 If applicable, replace null with loan ID\r\n    \"verificationStatus\": \"Pending\",\r\n    \"receiptURL\": null, // 🔹 Provide URL if available\r\n    \"receiptDate\": \"2025-02-10\",\r\n    \"receivedFrom\": \"Office\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{local}}v1/installment/store-installment",
-							"host": [
-								"{{local}}v1"
-							],
-							"path": [
-								"installment",
-								"store-installment"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "get-scrap-income",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -1869,7 +1832,7 @@
 			"name": "Installment",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "store",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1931,6 +1894,71 @@
 							"path": [
 								"bookings",
 								"get-booking-and-payment-history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store-installments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookingId\": 45, // 🔹 Add correct booking ID\r\n    \"incomeType\": \"Installment\",\r\n    \"dateReceived\": \"2025-02-10\",\r\n    \"amount\": 300000,\r\n    \"receiptNo\": \"6542685\",\r\n    \"receiptName\": \"Khilen Maniyar\",\r\n    \"projectId\": 49,\r\n    \"paymentMode\": \"Cheque\", // 🔹 Example: \"Cash\" or \"Cheque\"\r\n    \"bankName\": \"HDFC\",\r\n    \"chequeNumber\": \"56468213489\",\r\n    \"chequeDate\": \"2025-02-10\",\r\n    \"loanId\": null, // 🔹 If applicable, replace null with loan ID\r\n    \"verificationStatus\": \"Pending\",\r\n    \"receiptURL\": null, // 🔹 Provide URL if available\r\n    \"receiptDate\": \"2025-02-10\",\r\n    \"receivedFrom\": \"Office\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{local}}v1/installment/store-installment",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"installment",
+								"store-installment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-installment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTczOTQ0OTY5MywiZXhwIjoxNzM5NDUzMjkzfQ.JD2cFdbHGQ0hOhdUQUGt1z3ygTYQidWUgohQwS4aYNk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{local}}v1/installment/get-installment",
+							"host": [
+								"{{local}}v1"
+							],
+							"path": [
+								"installment",
+								"get-installment"
 							]
 						}
 					},

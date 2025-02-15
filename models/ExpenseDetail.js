@@ -8,7 +8,7 @@ const ExpenseDetail = sequelize.define("ExpenseDetail", {
     autoIncrement: true,
     primaryKey: true,
   },
-  expenseMasterId: {
+  ExpenseMasterId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
@@ -20,7 +20,7 @@ const ExpenseDetail = sequelize.define("ExpenseDetail", {
     type: DataTypes.STRING,
     allowNull: true,
   },
-  expenseHeadId: {
+  ExpenseHeadId: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
