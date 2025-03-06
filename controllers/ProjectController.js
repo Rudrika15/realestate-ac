@@ -40,14 +40,14 @@ exports.storeProject = async (req, res) => {
 
   // Validate input
   if (!project_name) {
-    return res.status(400).json({
+    return res.status(200).json({
       status: false,
       message: "Project name is required",
     });
   }
 
   if (!file) {
-    return res.status(400).json({
+    return res.status(200).json({
       status: false,
       message: "Excel file is required",
     });
@@ -255,20 +255,22 @@ exports.deleteProject = async (req, res) => {
     const projectStage = await ProjectStage.findOne({
       where: { projectId: id },
     });
-    if (projectStage) {
-      await ProjectStage.destroy({ where: { projectId: id } });
-    }
+
     const projectUnit = await ProjectUnit.findOne({
       where: { projectId: id },
     });
-    if (projectUnit) {
-      await ProjectUnit.destroy({ where: { projectId: id } });
-    }
     const projectPartner = await ProjectPartner.findOne({
       where: { projectId: id },
     });
-    if (projectPartner) {
-      await ProjectPartner.destroy({ where: { projectId: id } });
+
+    const booking = await BookingMaster.findOne({ where: { projectId: id } });
+
+    if (projectUnit && projectPartner && projectStage && booking) {
+      return res.status(200).json({
+        status: false,
+        message:
+          "Project cannot be deleted because it has units, stages , bookings and partners associated with it",
+      });
     }
     await project.destroy();
     return res.json({

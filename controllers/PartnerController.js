@@ -291,8 +291,19 @@ exports.partnerDelete = async (req, res) => {
   try {
     const { id } = req.params;
     const partner = await Partner.findOne({ where: { id } });
+
     if (!partner) {
       return res.status(404).json({ message: "Partner not found" });
+    }
+    const projectPartner = await ProjectPartner.findAll({
+      where: { partnerId: id },
+    });
+    if (projectPartner.length > 0) {
+      return res
+        .status(404)
+        .json({
+          message: "Partner is associated with projects and cannot be deleted",
+        });
     }
     await partner.destroy();
     res.status(200).json({

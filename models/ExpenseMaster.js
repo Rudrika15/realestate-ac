@@ -16,7 +16,7 @@ const ExpenseMaster = sequelize.define("ExpenseMaster", {
     allowNull: false,
   },
   totalAmount: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   isDeleted: {

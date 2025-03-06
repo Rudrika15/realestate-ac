@@ -153,3 +153,93 @@ exports.getInstallments = async (req, res) => {
     return res.status(500).json({ status: false, message: error.message });
   }
 };
+exports.getInstallmentById = async (req, res) => {
+  try {
+    const installmentId = req.params.id;
+    const installment = await InstallmentIncome.findOne({
+      where: { id: installmentId },
+      include: [
+        {
+          model: Income,
+          attributes: [
+            "id",
+            "projectId",
+            "amount",
+            "paymentMode",
+            "dateReceived",
+            "incomeType",
+          ],
+        },
+      ],
+    });
+
+    if (!installment) {
+      return res
+        .status(200)
+        .json({ status: false, message: "Installment not found" });
+    }
+
+    return res.status(200).json({
+      status: true,
+      message: "Installment details retrieved successfully",
+      data: installment,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+exports.deleteInstallment = async (req, res) => {
+  try {
+    const installmentId = req.params.id;
+    const installment = await InstallmentIncome.findOne({
+      where: { id: installmentId },
+    });
+
+    if (!installment) {
+      return res
+        .status(200)
+        .json({ status: false, message: "Installment not found" });
+    }
+    const incomeId = installment.incomeId;
+    await Income.destroy({ where: { id: incomeId } });
+
+    await installment.destroy();
+
+    return res.status(200).json({
+      status: true,
+      message: "Installment deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, message: error.message });
+  }
+};
+exports.updateInstallment = async (req, res) => {
+  try {
+    const installmentId = req.params.id;
+    const installment = await InstallmentIncome.findOne({
+      where: { id: installmentId },
+    });
+
+    if (!installment) {
+      return res
+        .status(200)
+        .json({ status: false, message: "Installment not found" });
+    }
+
+    const updatedInstallment = await InstallmentIncome.update(req.body, {
+      where: { id: installmentId },
+    });
+
+    return res.status(200).json({
+      status: true,
+      message: "Installment updated successfully",
+      data: updatedInstallment,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ status: false, message: error.message });
+  }
+  
+};

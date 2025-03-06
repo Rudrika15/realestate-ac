@@ -9,6 +9,8 @@ const {
   updateUser,
   deleteUser,
   rolesWisePermissions,
+  restoreUser,
+  deletedUsers,
 } = require("../controllers/UserController");
 const authMiddleware = require("../middlewares/authMiddelware");
 const authenticateToken = require("../middlewares/authenticateToken");
@@ -24,6 +26,8 @@ router.get("/get-users-by-id/:id", getUserById);
 router.post("/update-users/:id", updateUser);
 router.delete("/delete-users/:id", deleteUser);
 router.post("/add-user", storeUser);
+router.get("/get-deleted-users", deletedUsers);
+router.get("/restore-user/:id", restoreUser);
 
 router.post("/login", login);
 

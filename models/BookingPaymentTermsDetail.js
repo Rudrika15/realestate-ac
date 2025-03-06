@@ -26,7 +26,10 @@ const BookingPaymentTermsDetail = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-
+    stagId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

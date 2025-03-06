@@ -27,6 +27,7 @@ const ScrapIncome = require("./ScrapIncome");
 const Income = require("./Income");
 const IncomeInstallment = require("./IncomeInstallment");
 const UserProject = require("./UserProject");
+const LoginCount = require("./LoginCount");
 // create by and update by relations
 // for user
 
@@ -481,4 +482,5 @@ module.exports = {
   Income,
   IncomeInstallment,
   UserProject,
+  LoginCount,
 };

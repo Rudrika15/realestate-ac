@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize");
+const { Sequelize, where } = require("sequelize");
 // const { Op, QueryTypes } = require("sequelize");
 const {
   BookingMaster,
@@ -33,7 +33,7 @@ exports.storeBooking = async (req, res) => {
       "frequency",
       // "defaultDate",
       "isByBuilder",
-      "installmentDetails",
+      "payment_details",
     ];
 
     for (const field of requiredFields) {
@@ -58,7 +58,7 @@ exports.storeBooking = async (req, res) => {
     const booking = await BookingMaster.create({
       projectId: data.projectId,
       projectUnitId: data.projectUnitId,
-      brokerId: "1",
+      brokerId: data.brokerId,
       saleDeedAmount: data.saleDeedAmount,
       extraWorkAmount: data.extraWorkAmount,
       otherWorkAmount: data.otherWorkAmount,
@@ -115,51 +115,64 @@ exports.storeBooking = async (req, res) => {
       }
     );
 
-    if (!stageData || stageData.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "No stages found for the given project",
-      });
-    }
+    // if (!stageData || stageData.length === 0) {
+    //   return res.status(400).json({
+    //     status: false,
+    //     message: "No stages found for the given project",
+    //   });
+    // }
 
-    const paymentTermsDetails = stageData.map((stage) => {
-      const stagePercentage = stage.projectStagePer;
-      const saleDeedAmount = data.saleDeedAmount;
+    // const paymentTermsDetails = stageData.map((stage) => {
+    //   const stagePercentage = stage.projectStagePer;
+    //   const saleDeedAmount = data.saleDeedAmount;
 
-      if (isNaN(stagePercentage) || isNaN(saleDeedAmount)) {
-        throw new Error(
-          `Invalid values: stagePercentage (${stagePercentage}), saleDeedAmount (${saleDeedAmount})`
-        );
-      }
+    //   if (isNaN(stagePercentage) || isNaN(saleDeedAmount)) {
+    //     throw new Error(
+    //       `Invalid values: stagePercentage (${stagePercentage}), saleDeedAmount (${saleDeedAmount})`
+    //     );
+    //   }
 
-      const stageAmount = (stagePercentage / 100) * saleDeedAmount;
+    //   // const stageAmount = (stagePercentage / 100) * saleDeedAmount;
+    //   const stageAmount = (stagePercentage / 100) * saleDeedAmount;
 
-      if (isNaN(stage.id) || isNaN(stageAmount)) {
-        throw new Error(
-          `Invalid stageId or stageAmount for stage: ${stage.id}`
-        );
-      }
+    //   if (isNaN(stage.id) || isNaN(stageAmount)) {
+    //     throw new Error(
+    //       `Invalid stageId or stageAmount for stage: ${stage.id}`
+    //     );
+    //   }
 
-      return {
-        BookingPaymentTermsId: paymentTerms.id,
-        installmentId: stage.id,
-        type: stage.stageName,
-        installmentAmount: stageAmount,
-        installmentDueDate: stage.stageDueDate,
-        createdBy: userId,
-        updatedBy: userId,
-      };
-    });
+    //   return {
+    //     BookingPaymentTermsId: paymentTerms.id,
+    //     installmentId: stage.id,
+    //     type: stage.stageName,
+    //     installmentAmount: stageAmount,
+    //     installmentDueDate: stage.stageDueDate,
+    //     createdBy: userId,
+    //     updatedBy: userId,
+    //   };
+    // });
 
-    if (paymentTermsDetails.length === 0) {
-      return res.status(400).json({
-        status: false,
-        message: "No valid stages available for payment terms",
-      });
-    }
+    // if (paymentTermsDetails.length === 0) {
+    //   return res.status(400).json({
+    //     status: false,
+    //     message: "No valid stages available for payment terms",
+    //   });
+    // }
 
-    await BookingPaymentTermsDetail.bulkCreate(paymentTermsDetails);
+    // await BookingPaymentTermsDetail.bulkCreate(paymentTermsDetails);
 
+    const payment_details = data.payment_details.map((payment, index) => ({
+      BookingPaymentTermsId: paymentTerms.id,
+      type: payment.type,
+      installmentAmount: payment.installment_amount,
+      installmentDueDate: payment.installment_due_date,
+      stagId: payment.stag_id,
+      createdBy: userId,
+      updatedBy: userId,
+    }));
+
+    const booking_payment_terms_details =
+      await BookingPaymentTermsDetail.bulkCreate(payment_details);
     return res.status(200).json({
       status: true,
       message: "Booking created successfully",
@@ -167,6 +180,7 @@ exports.storeBooking = async (req, res) => {
         booking,
         customers,
         paymentTerms,
+        booking_payment_terms_details,
       },
     });
   } catch (err) {
@@ -274,7 +288,8 @@ exports.getBookingAndPaymentHistory = async (req, res) => {
     if (!customerName && !mobileNumber && !unitNo) {
       return res.status(400).json({
         status: false,
-        message: "At least one of customerName, mobileNumber, or unitNo is required",
+        message:
+          "At least one of customerName, mobileNumber, or unitNo is required",
       });
     }
 
@@ -288,7 +303,9 @@ exports.getBookingAndPaymentHistory = async (req, res) => {
       whereClause.mobileNumber = { [Sequelize.Op.eq]: mobileNumber }; // Exact match
     }
 
-    const findCustomerDetails = await CustomerMaster.findOne({ where: whereClause });
+    const findCustomerDetails = await CustomerMaster.findOne({
+      where: whereClause,
+    });
 
     if (!findCustomerDetails) {
       return res.status(404).json({
@@ -384,3 +401,31 @@ exports.getBookingAndPaymentHistory = async (req, res) => {
   }
 };
 
+exports.getBookingById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const booking = await BookingMaster.findOne({ where: { id } });
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    const bookingTerms = await BookingPaymentTerms.findOne({
+      where: { bookingId: id },
+    });
+    const bookingTermsId = bookingTerms.id;
+
+    const bookingPaymentTermsDetail = await BookingPaymentTermsDetail.findAll({
+      where: { BookingPaymentTermsId: bookingTermsId },
+    });
+    return res.status(200).json({
+      status: true,
+      message: "Booking fetched successfully",
+      data: { booking, bookingTerms, bookingPaymentTermsDetail },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      error: error.message,
+      message: "An error occurred while fetching the booking",
+    });
+  }
+};
