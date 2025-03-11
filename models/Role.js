@@ -1,32 +1,33 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+// const sequelize = require("../config/database");
+const { db1 } = require('../config/database')
 
-const Role = sequelize.define("Role", {
+const Role = db1.define('Role', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   role_name: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-module.exports = Role;
+module.exports = Role
