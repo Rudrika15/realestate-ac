@@ -1,45 +1,45 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const CustomerMaster = sequelize.define("CustomerMaster", {
+const CustomerMaster = db1.define('CustomerMaster', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   customerName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   type: {
-    type: DataTypes.ENUM("Primary", "Others"),
+    type: DataTypes.ENUM('Primary', 'Others'),
     allowNull: false,
-    defaultValue: "Primary",
+    defaultValue: 'Primary'
   },
   address: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   mobileNumber: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
+    allowNull: false
+  }
+})
 
-module.exports = CustomerMaster;
+module.exports = { CustomerMaster }

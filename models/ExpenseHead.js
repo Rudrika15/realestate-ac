@@ -1,32 +1,32 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const ExpenseHead = sequelize.define("ExpenseHead", {
+const ExpenseHead = db1.define('ExpenseHead', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   ExpenseHeadName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-module.exports = ExpenseHead;
+module.exports = { ExpenseHead }

@@ -1,59 +1,60 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Income = require("./Income");
-const Partner = require("./Partner");
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
+const Income = require('./Income')
+const Partner = require('./Partner')
+const { Income1 } = require('../models/Income')
 
-const PartnerIncome = sequelize.define("PartnerIncome", {
+const PartnerIncome = sequelize.define('PartnerIncome', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   incomeId: {
     type: DataTypes.INTEGER,
     references: {
       model: Income,
-      key: "id",
-    },
+      key: 'id'
+    }
   },
   partnerId: {
     type: DataTypes.INTEGER,
     references: {
       model: Partner,
-      key: "id",
-    },
+      key: 'id'
+    }
   },
   bankName: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   chequeNumber: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   chequeDate: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-Income.hasOne(PartnerIncome, { foreignKey: "incomeId" });
-PartnerIncome.belongsTo(Income, { foreignKey: "incomeId" });
+Income1.hasOne(PartnerIncome, { foreignKey: 'incomeId' })
+PartnerIncome.belongsTo(Income1, { foreignKey: 'incomeId' })
 
-module.exports = PartnerIncome;
+module.exports = PartnerIncome

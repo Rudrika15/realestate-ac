@@ -1,9 +1,6 @@
 const { DataTypes } = require('sequelize')
 const { db1, db2 } = require('../config/database') // Ensure the correct import path
 
-console.log('DB1:', db1 ? 'Loaded' : 'Undefined')
-console.log('DB2:', db2 ? 'Loaded' : 'Undefined')
-
 const definePartnerIncome = sequelizeInstance => {
   if (!sequelizeInstance) {
     throw new Error('Sequelize instance is undefined!')

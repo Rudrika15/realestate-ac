@@ -1,67 +1,67 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Project = require("./Project");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
+const { Project } = require('./Project')
 
-const BookingMaster = sequelize.define("BookingMaster", {
+const BookingMaster = db1.define('BookingMaster', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   projectId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   projectUnitId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   brokerId: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   bookingDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: false
   },
   saleDeedAmount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   extraWorkAmount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   otherWorkAmount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   approvalStatus: {
-    type: DataTypes.ENUM("Pending", "Approved", "Rejected"),
+    type: DataTypes.ENUM('Pending', 'Approved', 'Rejected'),
     allowNull: false,
-    defaultValue: "Pending",
+    defaultValue: 'Pending'
   },
   approvalDate: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true
   },
 
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
+    allowNull: false
+  }
+})
 
-module.exports = BookingMaster;
+module.exports = { BookingMaster }

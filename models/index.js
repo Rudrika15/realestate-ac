@@ -1,34 +1,36 @@
-const sequelize = require('../config/database')
-const User = require('./User')
-const Role = require('./Role')
-const Permission = require('./Permission')
-const RolePermission = require('./RolePermission')
-const UserRole = require('./UserRole')
-const Project = require('./Project')
-const ProjectUnit = require('./ProjectUnit')
-const ProjectStage = require('./ProjectStage')
-const ProjectStageTransaction = require('./ProjectStageTransaction')
-const Partner = require('./Partner')
-const ProjectPartner = require('./ProjectPartner')
-const CustomerMaster = require('./CustomerMaster')
-const BookingMaster = require('./BookingMaster')
-const BookingCustomer = require('./BookingCustomer')
-const BookingPaymentTerms = require('./BookingPaymentTerms')
-const BookingPaymentTermsDetail = require('./BookingPaymentTermsDetail')
-const ExpenseHead = require('./ExpenseHead')
-const ExpenseMaster = require('./ExpenseMaster')
-const ExpenseDetail = require('./ExpenseDetail')
-const IncomeHead = require('./IncomeHead')
-const IncomeMaster = require('./IncomeMaster')
-const IncomeDetail = require('./IncomeDetail')
-const Broker = require('./Broker')
-const PartnerIncome = require('./PartnerIncome')
-const ScrapIncome = require('./ScrapIncome')
-const Income = require('./Income')
-const IncomeInstallment = require('./IncomeInstallment')
-const UserProject = require('./UserProject')
-const LoginCount = require('./LoginCount')
-// create by and update by relations
+const { db1, db2 } = require('../config/database')
+
+// Import all models
+const { User } = require('./User')
+const { Role } = require('./Role')
+const { Permission } = require('./Permission')
+const { RolePermission } = require('./RolePermission')
+const { UserRole } = require('./UserRole')
+const { Project } = require('./Project')
+const { ProjectUnit } = require('./ProjectUnit')
+const { ProjectStage } = require('./ProjectStage')
+const { ProjectStageTransaction } = require('./ProjectStageTransaction')
+const { Partner } = require('./Partner')
+const { ProjectPartner } = require('./ProjectPartner')
+const { CustomerMaster } = require('./CustomerMaster')
+const { BookingMaster } = require('./BookingMaster')
+const { BookingCustomer } = require('./BookingCustomer')
+const { BookingPaymentTerms } = require('./BookingPaymentTerms')
+const { BookingPaymentTermsDetail } = require('./BookingPaymentTermsDetail')
+const { ExpenseHead } = require('./ExpenseHead')
+const { ExpenseMaster } = require('./ExpenseMaster')
+const { ExpenseDetail, ExpenseDetail2 } = require('./ExpenseDetail')
+const { IncomeHead } = require('./IncomeHead')
+const { IncomeMaster, IncomeMaster2 } = require('./IncomeMaster')
+const { IncomeDetail, IncomeDetail2 } = require('./IncomeDetail')
+const { Broker } = require('./Broker')
+const { PartnerIncomeDb1, PartnerIncomeDb2 } = require('./PartnerIncome')
+const { ScrapIncome1, ScrapIncome2 } = require('./ScrapIncome')
+const { Income1, Income2 } = require('./Income')
+const { InstallmentIncome, InstallmentIncome2 } = require('./IncomeInstallment')
+const { UserProject } = require('./UserProject')
+const { LoginCount } = require('./LoginCount')
+
 // for user
 
 User.hasOne(User, {
@@ -132,14 +134,13 @@ ProjectPartner.belongsTo(Project, {
 
 Project.belongsToMany(Partner, {
   through: ProjectPartner,
-  as: 'partners',
-  foreignKey: 'projectId'
+  foreignKey: 'projectId',
+  as: 'partners'
 })
-
 Partner.belongsToMany(Project, {
   through: ProjectPartner,
-  as: 'projects',
-  foreignKey: 'partnerId'
+  foreignKey: 'partnerId',
+  as: 'projects'
 })
 
 // ProjectPartner.belongsToMany(Project, {
@@ -192,6 +193,14 @@ IncomeMaster.hasOne(User, {
   as: 'IncomeMasterupdatedBy',
   foreignKey: 'updatedBy'
 })
+IncomeMaster2.hasOne(User, {
+  as: 'IncomeMastercreatedBy',
+  foreignKey: 'createdBy'
+})
+IncomeMaster2.hasOne(User, {
+  as: 'IncomeMasterupdatedBy',
+  foreignKey: 'updatedBy'
+})
 
 // for income head
 IncomeHead.hasOne(User, {
@@ -203,15 +212,26 @@ IncomeHead.hasOne(User, {
   foreignKey: 'updatedBy'
 })
 
-Income.belongsTo(IncomeHead, { foreignKey: 'incomeHeadId', as: 'IncomeHead' })
+Income1.belongsTo(IncomeHead, { foreignKey: 'incomeHeadId', as: 'IncomeHead' })
+Income2.belongsTo(IncomeHead, { foreignKey: 'incomeHeadId', as: 'IncomeHead' })
 
-// for income details
-IncomeDetail.hasOne(User, {
-  as: 'IncomeDetailcreatedBy',
+IncomeDetail.belongsTo(User, {
+  as: 'IncomeDetailCreatedBy',
   foreignKey: 'createdBy'
 })
-IncomeDetail.hasOne(User, {
-  as: 'IncomeDetailupdatedBy',
+
+IncomeDetail.belongsTo(User, {
+  as: 'IncomeDetailUpdatedBy',
+  foreignKey: 'updatedBy'
+})
+
+IncomeDetail2.belongsTo(User, {
+  as: 'IncomeDetail2CreatedBy',
+  foreignKey: 'createdBy'
+})
+
+IncomeDetail2.belongsTo(User, {
+  as: 'IncomeDetail2UpdatedBy',
   foreignKey: 'updatedBy'
 })
 
@@ -235,15 +255,23 @@ ExpenseHead.hasOne(User, {
   foreignKey: 'updatedBy'
 })
 
-// for expense details
-ExpenseDetail.hasOne(User, {
-  as: 'ExpenseDetailcreatedBy',
-  foreignKey: 'createdBy'
+ExpenseDetail.belongsTo(ExpenseMaster, {
+  foreignKey: 'expenseMasterId',
+  as: 'ExpenseMaster'
 })
-ExpenseDetail.hasOne(User, {
-  as: 'ExpenseDetailupdatedBy',
-  foreignKey: 'updatedBy'
+ExpenseDetail2.belongsTo(ExpenseMaster, {
+  foreignKey: 'expenseMasterId',
+  as: 'ExpenseMaster2'
 })
+// ExpenseDetail.belongsTo(ExpenseHead, {
+//   foreignKey: 'expenseHeadId',
+//   as: 'expenseHead'
+// })
+
+// ExpenseDetail2.belongsTo(ExpenseHead, {
+//   foreignKey: 'expenseHeadId',
+//   as: 'expenseHead2' // ✅ Use a unique alias
+// })
 
 // for Customer Master
 CustomerMaster.hasOne(User, {
@@ -371,30 +399,54 @@ Permission.belongsToMany(Role, {
 
 // expense head and user relations
 
+// ExpenseMaster has many ExpenseDetails
 ExpenseMaster.hasMany(ExpenseDetail, {
   as: 'details', // Alias for the relationship
-  foreignKey: 'expenseMasterId' // Foreign key in ExpenseDetail
+  foreignKey: 'expenseMasterId'
 })
 
+ExpenseMaster.hasMany(ExpenseDetail2, {
+  as: 'details2', // Alias for the second instance
+  foreignKey: 'expenseMasterId'
+})
+
+// ExpenseDetail belongs to ExpenseMaster
+// ExpenseDetail belongs to ExpenseMaster
 ExpenseDetail.belongsTo(ExpenseMaster, {
-  foreignKey: 'expenseMasterId' // Foreign key in ExpenseDetail
+  foreignKey: 'expenseMasterId',
+  as: 'expenseMaster'
+})
+ExpenseDetail2.belongsTo(ExpenseMaster, {
+  foreignKey: 'expenseMasterId',
+  as: 'expenseMaster2'
 })
 
+// ExpenseDetail belongs to ExpenseHead
 ExpenseDetail.belongsTo(ExpenseHead, {
   foreignKey: 'expenseHeadId',
   as: 'expenseHead'
 })
+ExpenseDetail2.belongsTo(ExpenseHead, {
+  foreignKey: 'expenseHeadId',
+  as: 'expenseHead2' // ✅ Unique alias to avoid conflicts
+})
 
 // ------------------------------------------------------------//
+Project.hasMany(Income1, { foreignKey: 'projectId' }) // ✅ Project has many Incomes
+Income1.belongsTo(Project, { foreignKey: 'projectId' }) // ✅ Income belongs to Project
 
-Project.hasMany(Income, { foreignKey: 'projectId' }) // Project has many Incomes
-PartnerIncome.belongsTo(Income, { foreignKey: 'incomeId' }) // PartnerIncome belongs to Income
-PartnerIncome.belongsTo(Partner, { foreignKey: 'partnerId' }) // PartnerIncome belongs to Partner
-Partner.hasMany(PartnerIncome, { foreignKey: 'partnerId' }) // Partner has many PartnerIncomes
-Income.belongsTo(Project, { foreignKey: 'projectId' })
+// ✅ Define associations (AFTER all models are imported)
+PartnerIncomeDb1.belongsTo(Income1, { foreignKey: 'incomeId' })
+PartnerIncomeDb1.belongsTo(Partner, { foreignKey: 'partnerId' })
+Partner.hasMany(PartnerIncomeDb1, { foreignKey: 'partnerId' })
+PartnerIncomeDb2.belongsTo(Income2, { foreignKey: 'incomeId' })
+PartnerIncomeDb2.belongsTo(Partner, { foreignKey: 'partnerId' })
+Partner.hasMany(PartnerIncomeDb2, { foreignKey: 'partnerId' })
 
-Income.hasOne(sequelize.models.ScrapIncome, { foreignKey: 'incomeId' })
-ScrapIncome.belongsTo(sequelize.models.Income, { foreignKey: 'incomeId' })
+Income1.hasOne(ScrapIncome1, { foreignKey: 'incomeId' })
+ScrapIncome1.belongsTo(Income1, { foreignKey: 'incomeId' })
+Income2.hasOne(ScrapIncome2, { foreignKey: 'incomeId' })
+ScrapIncome2.belongsTo(Income2, { foreignKey: 'incomeId' })
 
 CustomerMaster.hasMany(BookingCustomer, {
   foreignKey: 'customerId',
@@ -404,8 +456,6 @@ BookingCustomer.belongsTo(CustomerMaster, {
   foreignKey: 'customerId',
   as: 'customer'
 })
-
-// BookingMaster ↔ BookingCustomer (One-to-Many)
 BookingMaster.hasMany(BookingCustomer, {
   foreignKey: 'bookingId',
   as: 'customers'
@@ -414,17 +464,15 @@ BookingCustomer.belongsTo(BookingMaster, {
   foreignKey: 'bookingId',
   as: 'booking'
 })
-
-// BookingMaster ↔ BookingPaymentTerms (One-to-Many)
 BookingMaster.hasMany(BookingPaymentTerms, {
   foreignKey: 'bookingId',
   as: 'paymentTerms'
 })
-
 BookingPaymentTerms.belongsTo(BookingMaster, {
   foreignKey: 'bookingId',
   as: 'booking'
 })
+
 // BookingMaster Model
 BookingMaster.belongsTo(ProjectUnit, {
   foreignKey: 'projectUnitId',
@@ -437,7 +485,6 @@ ProjectUnit.hasOne(BookingMaster, {
   as: 'booking'
 })
 
-// BookingPaymentTerms ↔ BookingPaymentTermsDetail (One-to-Many)
 BookingPaymentTerms.hasMany(BookingPaymentTermsDetail, {
   foreignKey: 'BookingPaymentTermsId',
   as: 'paymentDetails'
@@ -446,14 +493,10 @@ BookingPaymentTermsDetail.belongsTo(BookingPaymentTerms, {
   foreignKey: 'BookingPaymentTermsId',
   as: 'paymentTerm'
 })
-// Sync the database
 
-// sequelize
-//   .sync({ alter: false, force: false })
-//   .then(() => console.log('All models synced'))
-//   .catch(err => console.log(err))
-
-module.exports = {
+const models = {
+  db1,
+  db2,
   User,
   Role,
   Permission,
@@ -473,14 +516,39 @@ module.exports = {
   ExpenseHead,
   ExpenseMaster,
   ExpenseDetail,
+  ExpenseDetail2,
   IncomeHead,
   IncomeMaster,
   IncomeDetail,
+  IncomeDetail2,
   Broker,
-  PartnerIncome,
-  ScrapIncome,
-  Income,
-  IncomeInstallment,
+  PartnerIncomeDb1,
+  PartnerIncomeDb2,
+  ScrapIncome1,
+  ScrapIncome2,
+  Income1,
+  Income2,
+  InstallmentIncome,
+  InstallmentIncome2,
   UserProject,
   LoginCount
 }
+
+Object.values(models).forEach(model => {
+  if (model.associate) {
+    model.associate(models)
+  }
+})
+
+Promise.all([
+  db1
+    .sync({ alter: false, force: false })
+    .then(() => console.log('✅ DB1 models synced successfully'))
+    .catch(err => console.error('❌ DB1 sync error:', err)),
+  db2
+    .sync({ alter: false, force: false })
+    .then(() => console.log('✅ DB2 models synced successfully'))
+    .catch(err => console.error('❌ DB2 sync error:', err))
+]).catch(err => console.error('❌ Error in syncing models:', err))
+
+module.exports = models

@@ -30,4 +30,4 @@ const Role = db1.define('Role', {
   }
 })
 
-module.exports = Role
+module.exports = { Role }

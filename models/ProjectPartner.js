@@ -1,46 +1,46 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const ProjectPartner = sequelize.define(
-  "ProjectPartner",
+const ProjectPartner = db1.define(
+  'ProjectPartner',
   {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     projectId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     partnerId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     percentage: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     isDeleted: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: false
     },
     isLocked: {
       type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      defaultValue: false
     },
     createdBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: false
     },
     updatedBy: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
+      allowNull: false
+    }
   },
   {
-    timestamps: false,
+    timestamps: false
   }
-);
+)
 
-module.exports = ProjectPartner;
+module.exports = { ProjectPartner }

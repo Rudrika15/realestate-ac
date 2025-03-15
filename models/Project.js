@@ -1,31 +1,31 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const Project = sequelize.define("Project", {
+const Project = db1.define('Project', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   projectName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
-module.exports = Project;
+    allowNull: true
+  }
+})
+module.exports = { Project }

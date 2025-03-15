@@ -1,67 +1,61 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
+const BookingPaymentTerms = db1.define('BookingPaymentTerms', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   bookingId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
+    type: DataTypes.ENUM('Full', 'Installment', 'Loan', 'Mixed'),
     allowNull: false,
-    defaultValue: "Installment",
+    defaultValue: 'Installment'
   },
   frequency: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   defaultDate: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true
   },
-  // loanStatus: {
-  //   type: DataTypes.ENUM("In Progress", "Completed"),
-  //   allowNull: true,
-  //   defaultValue: "In Progress",
-  // },
   loanStatus: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   loanBankName: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   loanAgentName: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   isByBuilder: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
-
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-});
+    allowNull: false
+  }
+})
 
-module.exports = BookingPaymentTerms;
+module.exports = { BookingPaymentTerms } // ✅ Export as an object

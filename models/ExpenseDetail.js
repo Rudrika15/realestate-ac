@@ -1,54 +1,80 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const { ExpenseHead } = require(".");
+const { DataTypes } = require('sequelize')
+const { db1, db2 } = require('../config/database')
 
-const ExpenseDetail = sequelize.define("ExpenseDetail", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  ExpenseMasterId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  projectId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  ExpenseHeadId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-  naration: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  amount: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
+const defineExpenseDetail = sequelizeInstance => {
+  if (!sequelizeInstance) {
+    throw new Error('Sequelize instance is undefined!')
+  }
 
-  isDeleted: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  isLocked: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
-  },
-  createdBy: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-  updatedBy: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+  console.log(
+    'Initializing ExpenseDetail model for DB:',
+    sequelizeInstance.config.database
+  )
 
-module.exports = ExpenseDetail;
+  return sequelizeInstance.define(
+    'ExpenseDetail',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+      },
+      expenseMasterId: {
+        // ✅ Use camelCase instead of ExpenseMasterId
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      projectId: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: true
+      },
+      expenseHeadId: {
+        // ✅ Use camelCase instead of ExpenseHeadId
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      narration: {
+        // ✅ Fix the typo (naration → narration)
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      amount: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      isLocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+      createdBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      updatedBy: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      }
+    },
+    {
+      tableName: 'expense_details', // ✅ Explicitly define the table name
+      timestamps: true
+    }
+  )
+}
+
+// ✅ Now models will be properly assigned
+const ExpenseDetail = defineExpenseDetail(db1)
+const ExpenseDetail2 = defineExpenseDetail(db2)
+
+module.exports = {
+  ExpenseDetail,
+  ExpenseDetail2
+}

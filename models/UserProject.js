@@ -1,51 +1,51 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const User = require("./User"); // Assuming User model exists
-const Project = require("./Project"); // Assuming Project model exists
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
+const { User } = require('./User') // Assuming User model exists
+const { Project } = require('./Project') // Assuming Project model exists
 
-const UserProject = sequelize.define("UserProject", {
+const UserProject = db1.define('UserProject', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: User,
-      key: "id",
+      key: 'id'
     },
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE'
   },
   projectId: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Project,
-      key: "id",
+      key: 'id'
     },
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE'
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-User.belongsToMany(Project, { through: UserProject, foreignKey: "userId" });
-Project.belongsToMany(User, { through: UserProject, foreignKey: "projectId" });
+User.belongsToMany(Project, { through: UserProject, foreignKey: 'userId' })
+Project.belongsToMany(User, { through: UserProject, foreignKey: 'projectId' })
 
-module.exports = UserProject;
+module.exports = { UserProject }

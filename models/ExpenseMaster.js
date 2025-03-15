@@ -1,40 +1,40 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const { DataTypes } = require('sequelize')
+const { db1 } = require('../config/database')
 
-const ExpenseMaster = sequelize.define("ExpenseMaster", {
+const ExpenseMaster = db1.define('ExpenseMaster', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   voucherNo: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   expenceDate: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: false
   },
   totalAmount: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-module.exports = ExpenseMaster;
+module.exports = { ExpenseMaster }

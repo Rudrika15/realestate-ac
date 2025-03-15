@@ -1,77 +1,78 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Income = require("./Income");
-const Booking = require("./BookingMaster");
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
+const Income = require('./Income')
+const Booking = require('./BookingMaster')
+const { Income1 } = require("../models/Income");
 
-const InstallmentIncome = sequelize.define("InstallmentIncome", {
+const InstallmentIncome = sequelize.define('InstallmentIncome', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   incomeId: {
     type: DataTypes.INTEGER,
     references: {
       model: Income,
-      key: "id",
-    },
+      key: 'id'
+    }
   },
   bookingId: {
     type: DataTypes.INTEGER,
     references: {
       model: Booking,
-      key: "id",
-    },
+      key: 'id'
+    }
   },
   installmentId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   loanId: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
 
   receiptNo: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   receiptName: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   bankName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   chequeNumber: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   chequeDate: {
     type: DataTypes.DATE,
-    allowNull: true,
+    allowNull: true
   },
 
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-Income.hasOne(InstallmentIncome, { foreignKey: "incomeId" });
-InstallmentIncome.belongsTo(Income, { foreignKey: "incomeId" });
+Income1.hasOne(InstallmentIncome, { foreignKey: 'incomeId' })
+InstallmentIncome.belongsTo(Income1, { foreignKey: 'incomeId' })
 
-module.exports = InstallmentIncome;
+module.exports = InstallmentIncome
