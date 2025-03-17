@@ -10,7 +10,7 @@ const { Project } = require('./Project')
 const { ProjectUnit } = require('./ProjectUnit')
 const { ProjectStage } = require('./ProjectStage')
 const { ProjectStageTransaction } = require('./ProjectStageTransaction')
-const { Partner } = require('./Partner')
+const { Partner, Partner2 } = require('./Partner')
 const { ProjectPartner } = require('./ProjectPartner')
 const { CustomerMaster } = require('./CustomerMaster')
 const { BookingMaster } = require('./BookingMaster')
@@ -132,15 +132,30 @@ ProjectPartner.belongsTo(Project, {
   foreignKey: 'projectId'
 })
 
+// ✅ OLD Many-to-Many Relationship (Keep old aliases)
 Project.belongsToMany(Partner, {
   through: ProjectPartner,
   foreignKey: 'projectId',
   as: 'partners'
 })
+
 Partner.belongsToMany(Project, {
   through: ProjectPartner,
   foreignKey: 'partnerId',
   as: 'projects'
+})
+
+// ✅ NEW Many-to-Many Relationship (Use new aliases)
+Project.belongsToMany(Partner2, {
+  through: ProjectPartner,
+  foreignKey: 'projectId',
+  as: 'partnersNew' // ✅ Unique alias for new relation
+})
+
+Partner2.belongsToMany(Project, {
+  through: ProjectPartner,
+  foreignKey: 'partnerId',
+  as: 'projectsNew' // ✅ Unique alias for new relation
 })
 
 // ProjectPartner.belongsToMany(Project, {
@@ -507,6 +522,7 @@ const models = {
   ProjectStage,
   ProjectStageTransaction,
   Partner,
+  Partner2,
   ProjectPartner,
   CustomerMaster,
   BookingMaster,
@@ -540,15 +556,15 @@ Object.values(models).forEach(model => {
   }
 })
 
-Promise.all([
-  db1
-    .sync({ alter: false, force: false })
-    .then(() => console.log('✅ DB1 models synced successfully'))
-    .catch(err => console.error('❌ DB1 sync error:', err)),
-  db2
-    .sync({ alter: false, force: false })
-    .then(() => console.log('✅ DB2 models synced successfully'))
-    .catch(err => console.error('❌ DB2 sync error:', err))
-]).catch(err => console.error('❌ Error in syncing models:', err))
+// Promise.all([
+//   db1
+//     .sync({ alter: false, force: false })
+//     .then(() => console.log('✅ DB1 models synced successfully'))
+//     .catch(err => console.error('❌ DB1 sync error:', err)),
+//   db2
+//     .sync({ alter: false, force: false })
+//     .then(() => console.log('✅ DB2 models synced successfully'))
+//     .catch(err => console.error('❌ DB2 sync error:', err))
+// ]).catch(err => console.error('❌ Error in syncing models:', err))
 
 module.exports = models

@@ -37,7 +37,7 @@ const defineExpenseDetail = sequelizeInstance => {
         type: DataTypes.INTEGER,
         allowNull: false
       },
-      narration: {
+      naration: {
         // ✅ Fix the typo (naration → narration)
         type: DataTypes.STRING,
         allowNull: false
@@ -64,7 +64,7 @@ const defineExpenseDetail = sequelizeInstance => {
       }
     },
     {
-      tableName: 'expense_details', // ✅ Explicitly define the table name
+      tableName: 'expensedetails', // ✅ Explicitly define the table name
       timestamps: true
     }
   )
