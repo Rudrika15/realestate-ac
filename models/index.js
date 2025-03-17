@@ -158,11 +158,11 @@ Partner2.belongsToMany(Project, {
   as: 'projectsNew' // ✅ Unique alias for new relation
 })
 
-// ProjectPartner.belongsToMany(Project, {
-//   through: Partner,
-//   as: "projects",
-//   foreignKey: "partnerId",
-// });
+ProjectPartner.belongsToMany(Project, {
+  through: Partner,
+  as: 'projects',
+  foreignKey: 'partnerId'
+})
 
 Partner.belongsTo(ProjectPartner, {
   as: 'partner',

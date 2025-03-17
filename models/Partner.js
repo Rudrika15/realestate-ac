@@ -5,7 +5,8 @@ const definePartner = sequelizeInstance => {
   if (!sequelizeInstance) {
     throw new Error('Sequelize instance is undefined!')
   }
-  const Partner = sequelizeInstance.define('Partner', {
+
+  return sequelizeInstance.define('Partner', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -34,6 +35,7 @@ const definePartner = sequelizeInstance => {
   })
 }
 
+// ✅ Ensure `definePartner` returns the model
 const Partner = definePartner(db1)
 const Partner2 = definePartner(db2)
 
