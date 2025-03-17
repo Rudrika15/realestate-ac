@@ -1,6 +1,7 @@
 const { ExpenseHead, ExpenseMaster, ExpenseDetail } = require("../models");
 const { Op } = require("sequelize"); // Import Sequelize operators
 
+const { encrypt, decrypt } = require("../utils/cryptoUtils");
 exports.createExpense = async (req, res) => {
   try {
     const userId = req.userId;
@@ -107,8 +108,6 @@ exports.createExpense = async (req, res) => {
     });
   }
 };
-
-const { encrypt, decrypt } = require("../utils/cryptoUtils");
 
 exports.getAllExpenses = async (req, res) => {
   try {
