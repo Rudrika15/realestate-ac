@@ -28,19 +28,6 @@ function decrypt (encryptedText) {
     const decipher = crypto.createDecipheriv(
       ALGORITHM,
       SECRET_KEY,
-<<<<<<< HEAD
-      Buffer.from(iv, "hex")
-    );
-    decipher.setAuthTag(Buffer.from(authTag, "hex"));
-
-    let decrypted = decipher.update(encrypted, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
-  } catch (error) {
-    console.error("Decryption failed:", error.message);
-    return null;
-=======
       Buffer.from(iv, 'hex')
     )
     decipher.setAuthTag(Buffer.from(authTag, 'hex'))
@@ -52,7 +39,6 @@ function decrypt (encryptedText) {
   } catch (error) {
     console.error('Decryption failed:', error.message)
     return null
->>>>>>> 5c2a5fd81c1e35b5236f002d898daef2e178bea6
   }
 }
 
