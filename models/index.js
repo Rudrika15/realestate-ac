@@ -1,38 +1,35 @@
 const { db1, db2 } = require("../config/database");
 
 // Import all models
-const { User } = require("./User");
-const { Role } = require("./Role");
-const { Permission } = require("./Permission");
-const { RolePermission } = require("./RolePermission");
-const { UserRole } = require("./UserRole");
-const { Project } = require("./Project");
-const { ProjectUnit } = require("./ProjectUnit");
-const { ProjectStage } = require("./ProjectStage");
-const { ProjectStageTransaction } = require("./ProjectStageTransaction");
-const { Partner } = require("./Partner");
-const { ProjectPartner } = require("./ProjectPartner");
-const { CustomerMaster } = require("./CustomerMaster");
-const { BookingMaster } = require("./BookingMaster");
-const { BookingCustomer } = require("./BookingCustomer");
-const { BookingPaymentTerms } = require("./BookingPaymentTerms");
-const { BookingPaymentTermsDetail } = require("./BookingPaymentTermsDetail");
-const { ExpenseHead } = require("./ExpenseHead");
-const { ExpenseMaster } = require("./ExpenseMaster");
-const { ExpenseDetail, ExpenseDetail2 } = require("./ExpenseDetail");
-const { IncomeHead } = require("./IncomeHead");
-const { IncomeMaster, IncomeMaster2 } = require("./IncomeMaster");
-const { IncomeDetail, IncomeDetail2 } = require("./IncomeDetail");
-const { Broker } = require("./Broker");
-const { PartnerIncomeDb1, PartnerIncomeDb2 } = require("./PartnerIncome");
-const { ScrapIncome1, ScrapIncome2 } = require("./ScrapIncome");
-const { Income1, Income2 } = require("./Income");
-const {
-  InstallmentIncome,
-  InstallmentIncome2,
-} = require("./IncomeInstallment");
-const { UserProject } = require("./UserProject");
-const { LoginCount } = require("./LoginCount");
+const { User } = require('./User')
+const { Role } = require('./Role')
+const { Permission } = require('./Permission')
+const { RolePermission } = require('./RolePermission')
+const { UserRole } = require('./UserRole')
+const { Project } = require('./Project')
+const { ProjectUnit } = require('./ProjectUnit')
+const { ProjectStage } = require('./ProjectStage')
+const { ProjectStageTransaction } = require('./ProjectStageTransaction')
+const { Partner, Partner2 } = require('./Partner')
+const { ProjectPartner } = require('./ProjectPartner')
+const { CustomerMaster } = require('./CustomerMaster')
+const { BookingMaster } = require('./BookingMaster')
+const { BookingCustomer } = require('./BookingCustomer')
+const { BookingPaymentTerms } = require('./BookingPaymentTerms')
+const { BookingPaymentTermsDetail } = require('./BookingPaymentTermsDetail')
+const { ExpenseHead } = require('./ExpenseHead')
+const { ExpenseMaster } = require('./ExpenseMaster')
+const { ExpenseDetail, ExpenseDetail2 } = require('./ExpenseDetail')
+const { IncomeHead } = require('./IncomeHead')
+const { IncomeMaster, IncomeMaster2 } = require('./IncomeMaster')
+const { IncomeDetail, IncomeDetail2 } = require('./IncomeDetail')
+const { Broker } = require('./Broker')
+const { PartnerIncomeDb1, PartnerIncomeDb2 } = require('./PartnerIncome')
+const { ScrapIncome1, ScrapIncome2 } = require('./ScrapIncome')
+const { Income1, Income2 } = require('./Income')
+const { InstallmentIncome, InstallmentIncome2 } = require('./IncomeInstallment')
+const { UserProject } = require('./UserProject')
+const { LoginCount } = require('./LoginCount')
 
 // for user
 
@@ -135,16 +132,31 @@ ProjectPartner.belongsTo(Project, {
   foreignKey: "projectId",
 });
 
+// ✅ OLD Many-to-Many Relationship (Keep old aliases)
 Project.belongsToMany(Partner, {
   through: ProjectPartner,
-  foreignKey: "projectId",
-  as: "partners",
-});
+  foreignKey: 'projectId',
+  as: 'partners'
+})
+
 Partner.belongsToMany(Project, {
   through: ProjectPartner,
   foreignKey: "partnerId",
   as: "projects",
 });
+
+// ✅ NEW Many-to-Many Relationship (Use new aliases)
+Project.belongsToMany(Partner2, {
+  through: ProjectPartner,
+  foreignKey: 'projectId',
+  as: 'partnersNew' // ✅ Unique alias for new relation
+})
+
+Partner2.belongsToMany(Project, {
+  through: ProjectPartner,
+  foreignKey: 'partnerId',
+  as: 'projectsNew' // ✅ Unique alias for new relation
+})
 
 // ProjectPartner.belongsToMany(Project, {
 //   through: Partner,
@@ -510,6 +522,7 @@ const models = {
   ProjectStage,
   ProjectStageTransaction,
   Partner,
+  Partner2,
   ProjectPartner,
   CustomerMaster,
   BookingMaster,

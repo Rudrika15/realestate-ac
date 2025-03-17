@@ -64,8 +64,8 @@ const defineExpenseDetail = (sequelizeInstance) => {
       },
     },
     {
-      tableName: "expensedetails", // ✅ Explicitly define the table name
-      timestamps: true,
+      tableName: 'expensedetails', // ✅ Explicitly define the table name
+      timestamps: true
     }
   );
 };
