@@ -1,11 +1,4 @@
-const {
-  User,
-  Role,
-  UserRole,
-  Permission,
-  UserProject,
-  LoginCount,
-} = require("../models");
+const { User, Role, UserRole, Permission, UserProject } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { Op } = require("sequelize");
@@ -169,107 +162,82 @@ exports.login = async (req, res) => {
     const { userName, passcode } = req.body;
 
     if (!userName) {
-      return res
-        .status(400)
-        .json({ status: false, message: "Username is required" });
+      return res.status(400).json({
+        status: false,
+        message: "userName is required",
+      });
     }
 
     if (!passcode) {
-      return res
-        .status(400)
-        .json({ status: false, message: "Passcode is required" });
+      return res.status(400).json({
+        status: false,
+        message: "Passcode is required",
+      });
     }
 
     const user = await User.findOne({
       where: { userName, isDeleted: 0 },
-      include: [{ model: Role, as: "userRoles", attributes: ["role_name"] }],
+
+      include: [
+        {
+          model: Role,
+          as: "userRoles",
+          attributes: ["role_name"],
+        },
+      ],
     });
 
     if (!user) {
-      return res.status(200).json({ status: false, message: "User not found" });
+      return res.status(200).json({
+        status: false,
+        message: "User not found",
+      });
     }
 
     const isMatch = await bcrypt.compare(passcode, user.passcode);
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ status: false, message: "Invalid passcode" });
+      return res.status(401).json({
+        status: false,
+        message: "Invalid passcode",
+      });
     }
 
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      return res
-        .status(500)
-        .json({ status: false, message: "JWT Secret not configured" });
+      return res.status(500).json({
+        status: false,
+        message: "JWT Secret not configured",
+      });
     }
 
-    const roleNames = user.userRoles.map((role) => role.role_name);
     const token = jwt.sign(
-      { userId: user.id, name: user.name, roles: roleNames },
+      { userId: user.id, name: user.name, role: user.role },
       jwtSecret,
-      {
-        expiresIn: "1h",
-      }
+      { expiresIn: "1h" } // Token expiration time is 1 hour
     );
+
+    const roleNames = user.userRoles.map((role) => role.role_name);
 
     const userData = {
       id: user.id,
       name: user.name,
       userName: user.userName,
-      roles: roleNames,
+      role: user.role,
     };
-
-    const today = new Date().toLocaleString("en-GB", {
-      timeZone: "Asia/Kolkata",
-    });
-    const formattedToday = today.split(",")[0].split("/").reverse().join("-");
-
-    console.log("Today's Date (IST):", formattedToday);
-    // Check if login count exceeds 5
-    const count = await LoginCount.findOne({ where: { userId: user.id } });
-    if (count && count.loginCount > 4) {
-      if (count && count.date == formattedToday) {
-        return res.status(200).json({
-          status: false,
-          message: "Something went wrong please try again letter",
-        });
-      }
-    }
-
-    // Manage login count
-    if (!count) {
-      await LoginCount.create({
-        userId: user.id,
-        loginCount: 1,
-        date: formattedToday,
-      });
-    } else {
-      const lastLoginDate = new Date(count.date).toISOString().split("T")[0];
-
-      if (lastLoginDate === formattedToday) {
-        await LoginCount.update(
-          { loginCount: count.loginCount + 1 },
-          { where: { userId: user.id } }
-        );
-      } else {
-        await LoginCount.update(
-          { loginCount: 1, date: formattedToday },
-          { where: { userId: user.id } }
-        );
-      }
-    }
 
     return res.status(200).json({
       status: true,
       message: "Login successful",
       data: userData,
+      roles: roleNames,
       token,
     });
   } catch (error) {
     console.error("Error during login:", error);
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal Server Error" });
+    return res.status(500).json({
+      status: false,
+      message: error.message,
+    });
   }
 };
 
