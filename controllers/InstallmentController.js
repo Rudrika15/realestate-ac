@@ -19,6 +19,8 @@ exports.createInstallment = async (req, res) => {
     verificationDate,
     verificationBy,
     receiptURL,
+    paymentType,
+    amountType,
   } = req.body;
 
   const incomeType = "Installment";
@@ -65,6 +67,16 @@ exports.createInstallment = async (req, res) => {
       .status(200)
       .json({ status: false, message: "Bank Name is required" });
   }
+  if (!paymentType) {
+    return res
+      .status(200)
+      .json({ status: false, message: "Payment Type is required" });
+  }
+  if (!amountType) {
+    return res
+      .status(200)
+      .json({ status: false, message: "Amount Type is required" });
+  }
 
   try {
     // Create Income entry
@@ -76,6 +88,9 @@ exports.createInstallment = async (req, res) => {
       incomeType,
       createdBy: userId,
       updatedBy: userId,
+      paymentType: paymentType, // Default if not provided
+      amountType: amountType, // Default if not provided
+      bookingId,
     });
 
     // Create Installment Income entry
@@ -111,9 +126,54 @@ exports.createInstallment = async (req, res) => {
   }
 };
 
+// exports.getInstallments = async (req, res) => {
+//   try {
+//     const { installmentId } = req.params; // Get installment ID from request params
+
+//     let query = {
+//       include: [
+//         {
+//           model: Income,
+//           attributes: [
+//             "id",
+//             "projectId",
+//             "amount",
+//             "paymentMode",
+//             "dateReceived",
+//             "incomeType",
+//           ],
+//         },
+//       ],
+//     };
+
+//     if (installmentId) {
+//       query.where = { id: installmentId };
+//     }
+
+//     const installments = await InstallmentIncome.findAll(query);
+
+//     if (!installments || installments.length === 0) {
+//       return res
+//         .status(200)
+//         .json({ status: false, message: "No installment found" });
+//     }
+
+//     return res.status(200).json({
+//       status: true,
+//       message: "Installment details retrieved successfully",
+//       data: installments,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({ status: false, message: error.message });
+//   }
+// };
 exports.getInstallments = async (req, res) => {
   try {
     const { installmentId } = req.params; // Get installment ID from request params
+    const { page = 1, limit = 10 } = req.query; // Get pagination parameters from query params
+
+    const offset = (page - 1) * limit; // Calculate offset
 
     let query = {
       include: [
@@ -129,13 +189,16 @@ exports.getInstallments = async (req, res) => {
           ],
         },
       ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
     };
 
     if (installmentId) {
       query.where = { id: installmentId };
     }
 
-    const installments = await InstallmentIncome.findAll(query);
+    const { count, rows: installments } =
+      await InstallmentIncome.findAndCountAll(query);
 
     if (!installments || installments.length === 0) {
       return res
@@ -147,12 +210,19 @@ exports.getInstallments = async (req, res) => {
       status: true,
       message: "Installment details retrieved successfully",
       data: installments,
+      pagination: {
+        totalRecords: count,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(count / limit),
+        pageSize: parseInt(limit),
+      },
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ status: false, message: error.message });
   }
 };
+
 exports.getInstallmentById = async (req, res) => {
   try {
     const installmentId = req.params.id;
@@ -241,5 +311,4 @@ exports.updateInstallment = async (req, res) => {
     console.error(error);
     return res.status(500).json({ status: false, message: error.message });
   }
-  
 };
