@@ -416,16 +416,6 @@ BookingCustomer.belongsTo(BookingMaster, {
   as: "booking",
 });
 
-// BookingMaster ↔ BookingPaymentTerms (One-to-Many)
-BookingMaster.hasMany(BookingPaymentTerms, {
-  foreignKey: "bookingId",
-  as: "paymentTerms",
-});
-
-BookingPaymentTerms.belongsTo(BookingMaster, {
-  foreignKey: "bookingId",
-  as: "booking",
-});
 // BookingMaster Model
 BookingMaster.belongsTo(ProjectUnit, {
   foreignKey: "projectUnitId",
@@ -438,13 +428,25 @@ ProjectUnit.hasOne(BookingMaster, {
   as: "booking",
 });
 
-// BookingPaymentTerms ↔ BookingPaymentTermsDetail (One-to-Many)
+// BookingMaster -> BookingPaymentTerms
+BookingMaster.hasMany(BookingPaymentTerms, {
+  foreignKey: "bookingId",
+  as: "paymentTerms",
+});
+
+BookingPaymentTerms.belongsTo(BookingMaster, {
+  foreignKey: "bookingId",
+  as: "booking",
+});
+
+// BookingPaymentTerms -> BookingPaymentTermsDetail
 BookingPaymentTerms.hasMany(BookingPaymentTermsDetail, {
-  foreignKey: "BookingPaymentTermsId",
+  foreignKey: "bookingPaymentTermsId",
   as: "paymentDetails",
 });
+
 BookingPaymentTermsDetail.belongsTo(BookingPaymentTerms, {
-  foreignKey: "BookingPaymentTermsId",
+  foreignKey: "bookingPaymentTermsId",
   as: "paymentTerm",
 });
 

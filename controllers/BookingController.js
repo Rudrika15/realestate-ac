@@ -45,6 +45,16 @@ exports.storeBooking = async (req, res) => {
       }
     }
 
+    const findProject = await ProjectStage.findOne({
+      where: { id: data.projectId },
+    });
+    if (!findProject) {
+      return res.status(400).json({
+        status: false,
+        message: "Project not found",
+      });
+    }
+
     const findStatusOfUnit = await ProjectUnit.findOne({
       where: { id: data.projectUnitId },
     });
@@ -52,6 +62,16 @@ exports.storeBooking = async (req, res) => {
       return res.status(400).json({
         status: false,
         message: "Unit is not available for booking",
+      });
+    }
+
+    const findBroker = await CustomerMaster.findOne({
+      where: { id: data.brokerId },
+    });
+    if (!findBroker) {
+      return res.status(400).json({
+        status: false,
+        message: "Broker not found",
       });
     }
 
@@ -280,126 +300,7 @@ exports.getProjectWiseStages = async (req, res) => {
     });
   }
 };
-
-exports.getBookingAndPaymentHistory = async (req, res) => {
-  try {
-    const { customerName, mobileNumber, unitNo } = req.query; // Using query parameters
-
-    if (!customerName && !mobileNumber && !unitNo) {
-      return res.status(400).json({
-        status: false,
-        message:
-          "At least one of customerName, mobileNumber, or unitNo is required",
-      });
-    }
-
-    const whereClause = {};
-
-    if (customerName) {
-      whereClause.customerName = { [Sequelize.Op.eq]: customerName }; // Exact match
-    }
-
-    if (mobileNumber) {
-      whereClause.mobileNumber = { [Sequelize.Op.eq]: mobileNumber }; // Exact match
-    }
-
-    const findCustomerDetails = await CustomerMaster.findOne({
-      where: whereClause,
-    });
-
-    if (!findCustomerDetails) {
-      return res.status(404).json({
-        status: false,
-        message: "Customer not found",
-      });
-    }
-
-    const findCustomer = await BookingCustomer.findOne({
-      where: { customerId: findCustomerDetails.id },
-      include: [
-        {
-          model: CustomerMaster,
-          as: "customer",
-          attributes: ["id", "customerName", "mobileNumber"],
-        },
-      ],
-    });
-
-    if (!findCustomer) {
-      return res.status(404).json({
-        status: false,
-        message: "Booking not found for this customer",
-      });
-    }
-
-    const bookingWhereClause = { id: findCustomer.bookingId };
-
-    const includeClause = [
-      {
-        model: BookingPaymentTerms,
-        as: "paymentTerms",
-        where: { isDeleted: false },
-        required: false,
-        include: [
-          {
-            model: BookingPaymentTermsDetail,
-            as: "paymentDetails",
-            required: false,
-          },
-        ],
-      },
-      {
-        model: BookingCustomer,
-        as: "customers",
-        include: [
-          {
-            model: CustomerMaster,
-            as: "customer",
-            attributes: ["id", "customerName", "mobileNumber"],
-          },
-        ],
-      },
-    ];
-
-    // If unitNo is provided, filter bookings where the related ProjectUnit has the given unitNo
-    if (unitNo) {
-      includeClause.push({
-        model: ProjectUnit, // Assuming this is the table containing unitNo
-        as: "projectUnit",
-        where: { unitNo: { [Sequelize.Op.eq]: unitNo } }, // Exact match for unit number
-        required: true, // Ensures only matching unit numbers are returned
-      });
-    }
-
-    const findBookingDetails = await BookingMaster.findOne({
-      where: bookingWhereClause,
-      include: includeClause,
-    });
-
-    if (!findBookingDetails) {
-      return res.status(404).json({
-        status: false,
-        message: "No booking found with the given unit number",
-      });
-    }
-
-    return res.status(200).json({
-      status: true,
-      message: "Booking and payment history fetched successfully",
-      data: {
-        customer: findCustomerDetails,
-        bookingDetails: findBookingDetails,
-      },
-    });
-  } catch (error) {
-    console.error("Error while fetching booking and payment history:", error);
-    return res.status(500).json({
-      status: false,
-      message: "An error occurred while fetching booking and payment history",
-      error: error.message,
-    });
-  }
-};
+exports.getBookingAndPaymentHistory = async (req, res) => {};
 
 exports.getBookingById = async (req, res) => {
   try {

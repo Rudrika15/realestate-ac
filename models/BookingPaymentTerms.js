@@ -12,9 +12,8 @@ const BookingPaymentTerms = sequelize.define("BookingPaymentTerms", {
     allowNull: false,
   },
   selectPlan: {
-    type: DataTypes.ENUM("Full", "Installment", "Loan", "Mixed"),
+    type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: "Installment",
   },
   frequency: {
     type: DataTypes.STRING,
