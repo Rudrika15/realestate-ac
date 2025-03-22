@@ -29,7 +29,18 @@ const Income = sequelize.define("Income", {
     type: DataTypes.ENUM("cash", "cheque"),
     allowNull: false,
   },
-
+  paymentType: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  amountType: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  bookingId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
   incomeHeadId: {
     type: DataTypes.INTEGER,
     allowNull: true,
