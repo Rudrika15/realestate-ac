@@ -1,51 +1,51 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const Role = require("./Role");
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
+const Role = require('./Role')
 
-const User = sequelize.define("User", {
+const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
   userName: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   status: {
-    type: DataTypes.ENUM("Active", "Inactive"),
-    defaultValue: "Active",
+    type: DataTypes.ENUM('Active', 'Inactive'),
+    defaultValue: 'Active'
   },
   passcode: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   authPasscode: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: "Users", // Ensure this matches the table name exactly
-      key: "id",
-    },
-    onDelete: "SET NULL",
-    onUpdate: "CASCADE",
+    allowNull: true
+    // references: {
+    //   model: "Users", // Ensure this matches the table name exactly
+    //   key: "id",
+    // },
+    // onDelete: "SET NULL",
+    // onUpdate: "CASCADE",
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-module.exports = User;
+module.exports = User
