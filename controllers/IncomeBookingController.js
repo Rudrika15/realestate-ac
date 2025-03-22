@@ -1,4 +1,4 @@
-const { IncomeBooking, IncomeBookingDetail } = require('../models')
+const { IncomeBooking, IncomeBookingDetail } = require("../models");
 
 exports.getIncomeBooking = async (req, res) => {
   try {
@@ -6,22 +6,22 @@ exports.getIncomeBooking = async (req, res) => {
       include: [
         {
           model: IncomeBookingDetail,
-          as: 'bookingDetails'
-        }
-      ]
-    })
+          as: "bookingDetails",
+        },
+      ],
+    });
     return res.status(200).json({
       status: true,
-      message: 'Income booking fetched successfully',
-      data: incomeBooking
-    })
+      message: "Income booking fetched successfully",
+      data: incomeBooking,
+    });
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: err.message
-    })
+      message: err.message,
+    });
   }
-}
+};
 
 exports.addIncomeBooking = async (req, res) => {
   try {
@@ -38,9 +38,10 @@ exports.addIncomeBooking = async (req, res) => {
       chequeDate,
       receiptUrl,
       term_id,
-      percentage
-    } = req.body
+      percentage,
+    } = req.body;
 
+    const userId = req.userId;
     // Ensure required fields are provided
     if (
       !amount ||
@@ -53,8 +54,8 @@ exports.addIncomeBooking = async (req, res) => {
     ) {
       return res.status(400).json({
         status: false,
-        message: 'Missing or invalid required fields'
-      })
+        message: "Missing or invalid required fields",
+      });
     }
 
     // Create the IncomeBooking record
@@ -69,27 +70,31 @@ exports.addIncomeBooking = async (req, res) => {
       bankName,
       chequeNo,
       chequeDate,
-      receiptUrl
-    })
+      receiptUrl,
+      createdBy: userId,
+      updatedBy: userId,
+    });
 
     // Create multiple IncomeBookingDetail records
     const incomeBookingDetails = term_id.map((term, index) => ({
       incomeBookingId: newIncomeBooking.id,
       term_id: term,
-      percentage: percentage[index]
-    }))
+      percentage: percentage[index],
+      createdBy: userId,
+      updatedBy: userId,
+    }));
 
-    await IncomeBookingDetail.bulkCreate(incomeBookingDetails)
+    await IncomeBookingDetail.bulkCreate(incomeBookingDetails);
 
     return res.status(200).json({
       status: true,
-      message: 'Income booking added successfully',
-      data: newIncomeBooking
-    })
+      message: "Income booking added successfully",
+      data: newIncomeBooking,
+    });
   } catch (err) {
     return res.status(500).json({
       status: false,
-      message: err.message
-    })
+      message: err.message,
+    });
   }
-}
+};
