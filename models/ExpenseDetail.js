@@ -1,54 +1,54 @@
-const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
-const { ExpenseHead } = require(".");
+const { DataTypes } = require('sequelize')
+const sequelize = require('../config/database')
+const { ExpenseHead } = require('.')
 
-const ExpenseDetail = sequelize.define("ExpenseDetail", {
+const ExpenseDetail = sequelize.define('ExpenseDetail', {
   id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true,
+    primaryKey: true
   },
-  ExpenseMasterId: {
+  expenseMasterId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   projectId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: true,
+    allowNull: true
   },
-  ExpenseHeadId: {
+  expenseHeadId: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
   naration: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   amount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: false
   },
 
   isDeleted: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   isLocked: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   createdBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: true
   },
   updatedBy: {
     type: DataTypes.INTEGER,
-    allowNull: true,
-  },
-});
+    allowNull: true
+  }
+})
 
-module.exports = ExpenseDetail;
+module.exports = ExpenseDetail
